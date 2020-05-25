@@ -1,8 +1,8 @@
 ---
-title: "Monte Carlo to Las Vegas"
-tags: ["Algorithms", "API"]
+title: Monte Carlo to Las Vegas
+tags: [Algorithms, API]
 created: 2019-06-15
-summary: "Trading performance for code reuse and readability in algorithm API design"
+summary: Trading performance for code reuse and readability in algorithm API design
 ---
 
 Recently I have been writing an algorithms library while following Computer Science courses to understand better the fundamental data structures that underpin modern computing. In the process, I have gained an appreciation of the benefits of good API design.
