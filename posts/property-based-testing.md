@@ -1,6 +1,6 @@
 ---
 title: Property-based testing
-tags: Testing
+tags: [Testing]
 created: 2018-10-15
 summary: An introduction to property-based testing and its applications in standard library algorithm validation
 ---
@@ -29,21 +29,21 @@ Consider the addition operation on integers. What conditions does it meet?
 
 - Associativity:
 
-  ```math
+  $$
   \left( i + j \right) + k = i + \left( j + k \right) \space \forall \space i, j, k \in \mathbb{Z}
-  ```
+  $$
 
 - Identity:
 
-  ```math
+  $$
   i + 0 = 0 + i = i \space \forall \space i \in \mathbb{Z}
-  ```
+  $$
 
 - Commutativity:
 
-  ```math
+  $$
   i + j  = j + i \space \forall \space i, j \in \mathbb{Z}
-  ```
+  $$
 
 We can assert that these properties hold by verifying that they apply for arbitrary integer triples. In a similar manner, property-based testing can also be employed to check algorithms that effect mutable data. We use it to test an implementation of mergesort.
 
@@ -127,15 +127,15 @@ A sorting function is defined by two properties:
 
 1. It must permute its **input** to form its **output**
 
-   ```math
+   $$
    \left(a_i \mid i \in I \right) = \left(a'_i \mid i \in I \right)
-   ```
+   $$
 
 2. It must totally-order its input to form its output (the comparer defines the total-ordering)
 
-   ```math
+   $$
    a'_i \leq a'_j \space \forall \space i, j \in I \space \text{such that} \space i < j
-   ```
+   $$
 
 We have described arrays as a [family](https://math.stackexchange.com/a/361530), and the primed elements belong to the permuted array.
 

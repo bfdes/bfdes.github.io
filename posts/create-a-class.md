@@ -1,6 +1,6 @@
 ---
 title: Create-A-Class
-tags: Optimisation
+tags: [Optimisation]
 created: 2019-12-05
 summary: Applying combinatorial optimisation to competitive multiplayer video game strategy
 ---
@@ -25,50 +25,50 @@ In this model, utility `U` is a multi-valued function of the weapon attributes, 
 
 - Each attribute `x[i]` contributes independently to an increase in utility
 
-  ```math
+  $$
   U(\mathbf{x}) = \displaystyle\sum_i U_i(x_i)
-  ```
+  $$
 
 - For a given attribute, larger values are always preferred to smaller ones
 
-  ```math
+  $$
   \dfrac{\partial U}{\partial x_i} = \dfrac{\partial U_i}{\partial x_i} > 0 \ \forall \ i
-  ```
+  $$
 
 The attribute vector itself comprises of a base term and the sum of attachment contributions. If we denote the presence of the j-th attachment in the i-th slot by a boolean variable, we can then write
 
-```math
+$$
 \mathbf{x} = \mathbf{x_0} + \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} \mathbf{\Delta x}_{ij}x'_{ij}, \ \text{where} \ x'_{ij} = \begin{cases}
    1 &\text{if present} \\
    0 &\text{if not present}
 \end{cases}
-```
+$$
 
 Apart from the integrality constraint, there are two other limits to state:
 
 - Gameplay mechanics mean we are restricted to making five modifications
 
-  ```math
+  $$
   \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} x'_{ij} \leq 5
-  ```
+  $$
 
 - We cannot make more than one modification in the same place
 
-  ```math
+  $$
   \displaystyle\sum_j^{n_i} x'_{ij} \leq 1 \ \forall \ i
-  ```
+  $$
 
 Note that we can assume, without any loss of generality, that the player has fully ranked a weapon so that every attachment is available.
 
 To get further, we need to propose a form for utility, our objective function. Composing it from a weighted sum of attribute contributions is a simple and intuitive model. More importantly, it will allow us to transform the problem into more tractable one later.
 
-```math
+$$
 \begin{aligned}
   U(\mathbf{x}) &= \displaystyle\sum_i U_i(x_i) \\
                 &= \displaystyle\sum_i u_ix_i \ \text{where} \ u_i > 0 \ \forall \ i \\
                 &= \mathbf{u} \cdot \mathbf{x}
 \end{aligned}
-```
+$$
 
 Apart from advancing a particular utility model for every player, we made some other assumptions implicitly:
 
@@ -81,14 +81,14 @@ Of these, the second assumption is the hardest one to reconcile with our model. 
 
 Observe that maximising the original objective `U` is the same as maximising a transformed one `U'`:
 
-```math
+$$
 \begin{aligned}
   U'             &= U(\mathbf{x}) - \mathbf{u} \cdot \mathbf{x_0} \\
                  &= \mathbf{u} \cdot \left(\displaystyle\sum_i^m \displaystyle\sum_j^{n_i} \mathbf{\Delta x}_{ij} x'_{ij} \right) \\
                  &= \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} x'_{ij} \times \mathbf{u} \cdot \mathbf{\Delta x}_{ij} \\
                  &= \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} P_{ij} x'_{ij}
 \end{aligned}
-```
+$$
 
 Thus the optimisation problem reduces to a variant of the Multiple-Choice Knapsack Problem where each "price" `P[i][j]` may be real-valued, but all the "objects" have the same weight -- 1.
 

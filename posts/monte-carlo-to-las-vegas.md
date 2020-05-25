@@ -1,8 +1,8 @@
 ---
-title: Monte Carlo to Las Vegas
-tags: Algorithms API
+title: "Monte Carlo to Las Vegas"
+tags: ["Algorithms", "API"]
 created: 2019-06-15
-summary: Trading performance for code reuse and readability in algorithm API design
+summary: "Trading performance for code reuse and readability in algorithm API design"
 ---
 
 Recently I have been writing an algorithms library while following Computer Science courses to understand better the fundamental data structures that underpin modern computing. In the process, I have gained an appreciation of the benefits of good API design.
@@ -13,16 +13,16 @@ The Monte Carlo class of algorithms are those which we can guarantee to terminat
 
 In some cases, it is possible to formulate a Las Vegas variant from the Monte Carlo variant of an algorithm.
 
-The Rabin Karp substring search algorithm has this property. Suppose we expose substring search algorithms as functions `f` that accept substrings `p` and return search functions for the text `t`:
+The Rabin Karp substring search algorithm has this property. Suppose we expose substring search algorithms as functions $f$ that accept substrings $p$ and return search functions for the text $t$:
 
-```math
+$$
 f : p \mapsto t \mapsto i,
 \ \text{where} \ i =
 \begin{cases}
   -1 &\text{if not found} \\
    i \in I &\text{if found}
 \end{cases}
-```
+$$
 
 The goal is to enable the client to write Las Vegas variant in terms of the Monte Carlo variant `f`, so that the library only has to export one implementation of Rabin Karp.
 

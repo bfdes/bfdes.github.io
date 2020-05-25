@@ -1,49 +1,59 @@
-const marked = require("marked");
-const katex = require("katex");
-const hljs = require("highlight.js");
+const unified = require("unified");
+const remarkParse = require("remark-parse");
+const remarkHighlight = require("remark-highlight.js");
+const remarkMath = require("remark-math");
+const remarkRehype = require("remark-rehype");
+const rehypeKatex = require("rehype-katex");
+const rehypeStringify = require("rehype-stringify");
+const vfile = require("vfile");
+const matter = require("vfile-matter");
 
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  highlight: (code, lang) => {
-    if (hljs.getLanguage(lang)) {
-      return hljs.highlight(lang, code).value;
-    } else if (lang === "math") {
-      return katex.renderToString(code);
-    }
-    return hljs.highlightAuto(code).value;
-  },
-  breaks: true
-});
+// Markdown AST -> word count compiler
+function retextCount() {
+  this.Compiler = countWords;
+}
 
-const metaRegex = /^\s*---(?<matter>[\s\S]*)---(?<content>[\s\S]*)$/;
-const rowRegex = /(?<key>\w+):\s*(?<value>[\w\s-!]+)\n+/g;
-const tagRegex = /(?<tag>\w+)/g;
+function countWords(tree) {
+  if (tree.type == "text") {
+    return tree.value.trim().split(/\s+/).length;
+  }
+  return (tree.children || [])
+    .map(countWords)
+    .reduce((count, childCount) => count + childCount, 0);
+}
 
-module.exports = function(source) {
-  const { matter, content } = metaRegex.exec(source).groups;
+module.exports = function(contents) {
+  let file = vfile({ contents });
+  matter(file, { strip: true });
+  // Extract metadata
+  const { title, summary, tags, created } = file.data.matter;
 
-  const meta = Array.from(matter.matchAll(rowRegex))
-    .map(match => match.groups)
-    .reduce((map, { key, value }) => map.set(key, value.trim()), new Map());
+  // Extract rendered post content
+  const body = unified()
+    .use(remarkParse)
+    .use(remarkHighlight)
+    .use(remarkMath)
+    .use(remarkRehype)
+    .use(rehypeKatex)
+    .use(rehypeStringify)
+    .processSync(file)
+    .toString();
 
-  const tags = Array.from(meta.get("tags").matchAll(tagRegex)).map(
-    match => match.groups.tag
-  );
-
-  const wordCount = content
-    .split("```")
-    .filter((_, i) => i % 2 === 0)
-    .map(block => block.trim().split(/\s+/).length)
-    .reduce((total, count) => total + count, 0);
-
-  const created = Date.parse(meta.get("created"));
+  // Calculate word count
+  file = vfile({ contents }); // n.b. render process mutates the file
+  matter(file, { strip: true });
+  const wordCount = unified()
+    .use(remarkParse)
+    .use(remarkMath)
+    .use(retextCount)
+    .processSync(file).contents;
 
   return `module.exports = ${JSON.stringify({
-    title: meta.get("title"),
-    summary: meta.get("summary"),
-    wordCount,
+    title,
+    summary,
     tags,
-    created,
-    body: marked(content)
+    wordCount,
+    body,
+    created: created.getTime()
   })}`;
 };

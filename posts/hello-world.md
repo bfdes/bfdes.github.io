@@ -1,6 +1,6 @@
 ---
 title: Hello World!
-tags: React SSR
+tags: [React, SSR]
 created: 2018-07-22
 summary: Brief overview and comparison of various modern approaches of creating websites
 ---
