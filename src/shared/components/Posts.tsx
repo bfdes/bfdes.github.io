@@ -136,10 +136,8 @@ class Posts extends React.Component<Props, State> {
 }
 
 const Wrapped: React.FC<Props> = (props: Props) => {
-  const WithPosts: React.FC<PostStub[]> = (data: PostStub[]) => (
-    <Posts {...props} context={{ data }} />
-  );
-  return <Context.Posts.Consumer>{WithPosts}</Context.Posts.Consumer>;
+  const data = React.useContext(Context.Posts);
+  return <Posts {...props} context={{ data }} />;
 };
 
 export default Wrapped;

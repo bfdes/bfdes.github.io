@@ -110,10 +110,8 @@ class PostOr404 extends React.Component<Props, State> {
 }
 
 const Wrapped: React.FC<Props> = (props: Props) => {
-  const WithPost: React.FC<Post> = (data: Post) => (
-    <PostOr404 {...props} context={{ data }} />
-  );
-  return <Context.Post.Consumer>{WithPost}</Context.Post.Consumer>;
+  const data = React.useContext(Context.Post);
+  return <PostOr404 {...props} context={{ data }} />;
 };
 
 export default Wrapped;
