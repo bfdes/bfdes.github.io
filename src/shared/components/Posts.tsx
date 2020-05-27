@@ -44,6 +44,8 @@ type State = {
 };
 
 class Posts extends React.Component<Props, State> {
+  mounted: boolean;
+
   constructor(props: Props) {
     super(props);
 
@@ -76,6 +78,7 @@ class Posts extends React.Component<Props, State> {
   but not when React's deferred first render occurs.
   */
   public componentDidMount(): void {
+    this.mounted = true;
     if (this.state.posts == null) {
       const { tag } = this.props;
       this.fetchPosts(tag);
@@ -124,14 +127,30 @@ class Posts extends React.Component<Props, State> {
     );
   }
 
+  public componentWillUnmount(): void {
+    this.mounted = false;
+  }
+
   private fetchPosts(tag?: string): void {
     const url = `/api/posts${tag === undefined ? "" : `?tag=${tag}`}`;
-    this.setState({ loading: true }, () =>
-      this.props
-        .get(url)
-        .then(posts => this.setState({ posts, loading: false }))
-        .catch(error => this.setState({ error, loading: false }))
-    );
+    this.setState({ loading: true }, () => {
+      // Guard against a race condition where the state updates despite the user navigating away
+      // This can happen when running on low powered devuces or against slow networks
+      if (this.mounted) {
+        this.props
+          .get(url)
+          .then(posts => {
+            if (this.mounted) {
+              this.setState({ posts, loading: false });
+            }
+          })
+          .catch(error => {
+            if (this.mounted) {
+              this.setState({ error, loading: false });
+            }
+          });
+      }
+    });
   }
 }
 
