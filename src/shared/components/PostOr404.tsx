@@ -107,22 +107,20 @@ class PostOr404 extends React.Component<Props, State> {
 
   private fetchPost(slug: string): void {
     const url = `/api/posts/${slug}`;
-    this.setState({ loading: true }, () => {
-      if (this.mounted) {
-        this.props
-          .get(url)
-          .then(post => {
-            if (this.mounted) {
-              this.setState({ post, loading: false });
-            }
-          })
-          .catch(error => {
-            if (this.mounted) {
-              this.setState({ error, loading: false });
-            }
-          });
-      }
-    });
+    this.setState({ loading: true }, () =>
+      this.props
+        .get(url)
+        .then(post => {
+          if (this.mounted) {
+            this.setState({ post, loading: false });
+          }
+        })
+        .catch(error => {
+          if (this.mounted) {
+            this.setState({ error, loading: false });
+          }
+        })
+    );
   }
 }
 
