@@ -133,24 +133,21 @@ class Posts extends React.Component<Props, State> {
 
   private fetchPosts(tag?: string): void {
     const url = `/api/posts${tag === undefined ? "" : `?tag=${tag}`}`;
-    this.setState({ loading: true }, () => {
-      // Guard against a race condition where the state updates despite the user navigating away
-      // This can happen when running on low powered devuces or against slow networks
-      if (this.mounted) {
-        this.props
-          .get(url)
-          .then(posts => {
-            if (this.mounted) {
-              this.setState({ posts, loading: false });
-            }
-          })
-          .catch(error => {
-            if (this.mounted) {
-              this.setState({ error, loading: false });
-            }
-          });
-      }
-    });
+    this.setState({ loading: true }, () =>
+      this.props
+        .get(url)
+        .then(posts => {
+          // Guard against races that occur on slow networks
+          if (this.mounted) {
+            this.setState({ posts, loading: false });
+          }
+        })
+        .catch(error => {
+          if (this.mounted) {
+            this.setState({ error, loading: false });
+          }
+        })
+    );
   }
 }
 
