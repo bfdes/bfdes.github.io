@@ -44,7 +44,7 @@ type State = {
 };
 
 class Posts extends React.Component<Props, State> {
-  mounted: boolean;
+  private mounted: boolean;
 
   constructor(props: Props) {
     super(props);

@@ -46,7 +46,7 @@ type State = {
 };
 
 class PostOr404 extends React.Component<Props, State> {
-  mounted: boolean;
+  private mounted: boolean;
 
   constructor(props: Props) {
     super(props);
