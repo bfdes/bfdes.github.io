@@ -49,7 +49,7 @@
     "file-loader": "^6.1.1",
     "husky": "^4.3.0",
     "jest": "^24.9.0",
-    "marked": "^0.8.0",
+    "marked": "^1.2.2",
     "nodemon": "^2.0.6",
     "prettier": "^2.1.2",
     "rehype-highlight": "^4.0.0",
