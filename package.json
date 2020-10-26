@@ -59,7 +59,7 @@
     "remark-parse": "^8.0.2",
     "remark-rehype": "^7.0.0",
     "retext-stringify": "^2.0.4",
-    "supertest": "^4.0.2",
+    "supertest": "^5.0.0",
     "ts-jest": "^24.3.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.5",
