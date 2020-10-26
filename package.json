@@ -22,7 +22,7 @@
     "morgan": "^1.10.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "@types/compression": "^1.0.1",
