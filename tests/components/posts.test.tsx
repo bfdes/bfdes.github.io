@@ -1,6 +1,6 @@
 import { mount } from "enzyme";
 import * as React from "react";
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { Posts } from "shared/components";
 import { Context } from "shared/containers";
@@ -12,9 +12,9 @@ test("withTag", () => {
   const WithTag = withTag(({ tag }) => <>{tag}</>);
   const wrapper = mount(
     <MemoryRouter initialEntries={[`/posts?tag=${tag}`]}>
-      <Route path="/posts">
-        <WithTag />
-      </Route>
+      <Routes>
+        <Route path="posts" element={<WithTag />} />
+      </Routes>
     </MemoryRouter>
   );
   expect(wrapper.text()).toBe(tag);

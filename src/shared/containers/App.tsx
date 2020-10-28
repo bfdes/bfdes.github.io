@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { About, NoMatch, Sidebar } from "../components";
 import * as Components from "../components";
 import { withSlug, withTag, withClient } from "../hocs";
@@ -9,24 +9,17 @@ const App: React.FC = () => {
   const Posts = withTag(withClient(Components.Posts));
   return (
     <>
-      <Route path="/">
-        <Sidebar />
-      </Route>
+      <Route element={<Sidebar />} />
       <div id="content">
-        <Switch>
-          <Route path="/about">
-            <About />
+        <Routes>
+          <Route element={<Posts />} />
+          <Route path="about" element={<About />} />
+          <Route path="posts">
+            <Route element={<Posts />} />
+            <Route path=":slug" element={<PostOr404 />} />
           </Route>
-          <Route path="/posts/:slug">
-            <PostOr404 />
-          </Route>
-          <Route exact path={["/", "/posts"]}>
-            <Posts />
-          </Route>
-          <Route>
-            <NoMatch />
-          </Route>
-        </Switch>
+          <Route path="*" element={<NoMatch />} />
+        </Routes>
       </div>
     </>
   );
