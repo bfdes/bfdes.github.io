@@ -60,7 +60,7 @@ class Posts extends React.Component<Props, State> {
       posts = window.__INITIAL_DATA__ as PostStub[];
       delete window.__INITIAL_DATA__; // (1)
     } else {
-      posts = this.props.context.data;
+      posts = props.context.data;
     }
 
     this.state = {

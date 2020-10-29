@@ -55,7 +55,7 @@ class PostOr404 extends React.Component<Props, State> {
       post = window.__INITIAL_DATA__ as Post;
       delete window.__INITIAL_DATA__;
     } else {
-      post = this.props.context.data;
+      post = props.context.data;
     }
 
     this.state = {

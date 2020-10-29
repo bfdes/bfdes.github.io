@@ -31,7 +31,7 @@ module.exports = [
             options: {
               name: "[name].[ext]",
               outputPath: "images/",
-              limit: 8192, // Beyond this limit do not inline files, delegate processing to file-loader
+              limit: 8192, // Beyond this limit do not inline files; delegate processing to file-loader
             },
           },
         },
@@ -101,5 +101,10 @@ module.exports = [
       }),
     ],
     target: "node",
+    ignoreWarnings: [
+      {
+        module: RegExp("node_modules/express/lib/view.js"), // Suppress warning associated with bundling Express
+      },
+    ],
   },
 ];

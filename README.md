@@ -56,9 +56,3 @@ Running `yarn build:prod` generates two bundles
 - A single file of server-side code
 
 Run the server-side code using Node.js, and optionally configure a webserver to serve assets under /static.
-
-## Known issues
-
-- From bundling Express: 'the request of a dependency is an expression'
-
-  Bundling server-side modules with Webpack has [always been problematic](https://github.com/expressjs/express/issues/2832).
