@@ -63,4 +63,4 @@ Run the server-side code using Node.js, and optionally configure a webserver to 
 
 Running `docker build .` builds a container image that wraps application code.
 
-TODO: GitHub Actions will also build an image for every code push to master.
+GitHub Actions will also build an image for every release and code push to master.
