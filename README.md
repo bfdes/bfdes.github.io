@@ -11,7 +11,7 @@ When the server-side code is built, the posts are bundled using a custom Webpack
 
 ## Requirements
 
-- Node 12.x
+- Node 14.x
 - Yarn 1.x
 
 ## Usage
@@ -46,9 +46,11 @@ Run `yarn test` to run the tests using Jest.
 
 Run `yarn:lint` and `yarn:format` to lint and format code, respectively.
 
-Circle CI will also run this test suite for every code push to master.
+GitHub Actions will also run this test suite for every PR.
 
 ## Deployment
+
+### Bare metal or VM
 
 Running `yarn build:prod` generates two bundles
 
@@ -56,3 +58,9 @@ Running `yarn build:prod` generates two bundles
 - A single file of server-side code
 
 Run the server-side code using Node.js, and optionally configure a webserver to serve assets under /static.
+
+### Container
+
+Running `docker build .` builds a container image that wraps application code. 
+
+TODO: GitHub Actions will also build an image for every code push to master.
