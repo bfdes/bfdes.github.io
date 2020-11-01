@@ -3,7 +3,7 @@ on: push
 jobs:
   test:
     strategy:
-      matrix: 
+      matrix:
         os: [macos-latest, windows-latest, ubuntu-18.04]
     runs-on: ${{ matrix.os }}
     steps:
