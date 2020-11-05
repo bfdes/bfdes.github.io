@@ -51,7 +51,7 @@ export default function (db: DB): Router {
     const posts = db.list();
 
     const stream = renderToNodeStream(
-      <StaticRouter location={req.url} context={{}}>
+      <StaticRouter location={req.url}>
         <Context.Posts.Provider value={posts}>
           <App />
         </Context.Posts.Provider>
@@ -73,7 +73,7 @@ export default function (db: DB): Router {
     const posts = db.list(tag);
 
     const stream = renderToNodeStream(
-      <StaticRouter location={req.url} context={{}}>
+      <StaticRouter location={req.url}>
         <Context.Posts.Provider value={posts}>
           <App />
         </Context.Posts.Provider>
@@ -95,7 +95,7 @@ export default function (db: DB): Router {
     const postOrNone = db.get(slug);
 
     const stream = renderToNodeStream(
-      <StaticRouter location={req.url} context={{}}>
+      <StaticRouter location={req.url}>
         <Context.Post.Provider value={postOrNone}>
           <App />
         </Context.Post.Provider>
@@ -163,7 +163,7 @@ export default function (db: DB): Router {
   // 404 handler
   router.get("*", (req, res) => {
     const stream = renderToNodeStream(
-      <StaticRouter location={req.url} context={{}}>
+      <StaticRouter location={req.url}>
         <App />
       </StaticRouter>
     );
