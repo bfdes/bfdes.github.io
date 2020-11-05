@@ -1,12 +1,29 @@
-import { shallow } from "enzyme";
 import * as React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
 
 import Date from "shared/components/Date";
 
-describe("<Date /> on server", () => {
+describe("<Date />", () => {
+  let container: HTMLDivElement = null;
+
+  beforeEach(() => {
+    container = document.createElement("div");
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    unmountComponentAtNode(container);
+    container.remove();
+    container = null;
+  });
+
   it("renders UNIX birthday", () => {
-    const wrapper = shallow(<Date timestamp={0} />);
-    expect(wrapper.text()).toBe("1 January 1970");
+    act(() => {
+      render(<Date timestamp={0} />, container);
+    });
+
+    expect(container.textContent).toBe("1 January 1970");
   });
 
   it("renders current time", () => {
@@ -30,7 +47,9 @@ describe("<Date /> on server", () => {
     const month = monthNames[now.getMonth()];
     const year = now.getFullYear();
 
-    const wrapper = shallow(<Date timestamp={now.getTime()} />);
-    expect(wrapper.text()).toBe(`${day} ${month} ${year}`);
+    act(() => {
+      render(<Date timestamp={now.getTime()} />, container);
+    });
+    expect(container.textContent).toBe(`${day} ${month} ${year}`);
   });
 });

@@ -1,5 +1,6 @@
-import { mount } from "enzyme";
 import * as React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
 import { MemoryRouter, Route } from "react-router-dom";
 
 import { PostOr404 } from "shared/components";
@@ -7,17 +8,31 @@ import { Context } from "shared/containers";
 import { withSlug } from "shared/hocs";
 import { RequestError } from "shared/http";
 
+let container: HTMLDivElement = null;
+
+beforeEach(() => {
+  container = document.createElement("div");
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
+
 test("withSlug", () => {
   const slug = "my-first-post";
   const WithSlug = withSlug(({ slug }) => <>{slug}</>);
-  const wrapper = mount(
+  render(
     <MemoryRouter initialEntries={[`/posts/${slug}`]}>
       <Route path="/posts/:slug">
         <WithSlug />
       </Route>
-    </MemoryRouter>
+    </MemoryRouter>,
+    container
   );
-  expect(wrapper.text()).toBe(slug);
+  expect(container.textContent).toBe(slug);
 });
 
 describe("<PostOr404 />", () => {
@@ -33,95 +48,94 @@ describe("<PostOr404 />", () => {
     next: "my-third-post",
   };
 
-  describe("<PostOr404 /> on server", () => {
+  describe("on server", () => {
     beforeAll(() => {
       global.__isBrowser__ = false;
     });
 
     it("displays post", () => {
-      const wrapper = mount(
-        <MemoryRouter>
-          <Context.Post.Provider value={post}>
-            <PostOr404 get={jest.fn()} slug="test" />
-          </Context.Post.Provider>
-        </MemoryRouter>
-      );
-      expect(wrapper.find(".post")).toHaveLength(1);
+      act(() => {
+        render(
+          <MemoryRouter>
+            <Context.Post.Provider value={post}>
+              <PostOr404 get={jest.fn()} slug="test" />
+            </Context.Post.Provider>
+          </MemoryRouter>,
+          container
+        );
+      });
+      expect(container.querySelectorAll(".post")).toHaveLength(1);
     });
   });
 
-  describe("<PostOr404 /> on client", () => {
+  describe("on client", () => {
     beforeAll(() => {
       global.__isBrowser__ = true;
     });
 
-    it("fetches the correct post", () => {
-      const { slug } = post;
+    it("displays post", async () => {
       const mockPromise = Promise.resolve(post);
       const get = jest.fn(() => mockPromise);
 
-      mount(
-        <MemoryRouter>
-          <PostOr404 slug={slug} get={get} />
-        </MemoryRouter>
-      );
-      return mockPromise.then(() => {
-        expect(get).toHaveBeenCalledWith(
-          `/api/posts/${slug}`,
-          expect.anything()
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <PostOr404 get={get} slug="test" />
+          </MemoryRouter>,
+          container
         );
       });
+
+      expect(container.querySelectorAll(".post")).toHaveLength(1);
     });
 
-    it("displays post", () => {
-      const mockPromise = Promise.resolve(post);
-      const get = jest.fn(() => mockPromise);
-
-      const wrapper = mount(
-        <MemoryRouter>
-          <PostOr404 get={get} slug="test" />
-        </MemoryRouter>
-      );
-      return mockPromise.then(() => {
-        expect(wrapper.update().find(".post")).toHaveLength(1);
-      });
-    });
-
-    it("displays <NoMatch /> when post does not exist", () => {
+    it("displays <NoMatch /> when post does not exist", async () => {
       const err = new RequestError(404, "404: No post with that slug");
       const mockPromise = Promise.reject(err);
       const get = jest.fn(() => mockPromise);
 
-      const wrapper = mount(
-        <MemoryRouter>
-          <PostOr404 get={get} slug="test" />
-        </MemoryRouter>
-      );
-      return mockPromise
-        .then(() => {
-          // Ref. https://github.com/airbnb/enzyme/issues/450#issuecomment-341244926
-        })
-        .catch(() => {
-          expect(wrapper.update().find(".fourOhFour")).toHaveLength(1);
-        });
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <PostOr404 get={get} slug="test" />
+          </MemoryRouter>,
+          container
+        );
+      });
+
+      expect(container.querySelectorAll(".fourOhFour")).toHaveLength(1);
     });
 
-    it("displays error message for failed request", () => {
+    it("fetches the correct post", async () => {
+      const { slug } = post;
+      const mockPromise = Promise.resolve(post);
+      const get = jest.fn(() => mockPromise);
+
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <PostOr404 get={get} slug={slug} />
+          </MemoryRouter>,
+          container
+        );
+      });
+      expect(get).toHaveBeenCalledWith(`/api/posts/${slug}`, expect.anything());
+    });
+
+    it("displays error message for failed request", async () => {
       const mockPromise = Promise.reject(new Error());
       const get = jest.fn(() => mockPromise);
 
-      const wrapper = mount(
-        <MemoryRouter>
-          <PostOr404 get={get} slug="test" />
-        </MemoryRouter>
-      );
-      return mockPromise
-        .then(() => {
-          // Ref. https://github.com/airbnb/enzyme/issues/450#issuecomment-341244926
-        })
-        .catch(() => {
-          expect(wrapper.update().find(".error")).toHaveLength(1);
-        });
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <PostOr404 get={get} slug="test" />
+          </MemoryRouter>,
+          container
+        );
+      });
+
+      expect(container.querySelectorAll(".error")).toHaveLength(1);
     });
   });
 });

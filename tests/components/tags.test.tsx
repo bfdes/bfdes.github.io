@@ -1,38 +1,75 @@
-import { mount, shallow } from "enzyme";
 import * as React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router-dom";
-
-import Tags from "shared/components/Tags";
+import Tags from "src/shared/components/Tags";
 
 describe("<Tags />", () => {
+  let container: HTMLDivElement = null;
+
+  beforeEach(() => {
+    container = document.createElement("div");
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    unmountComponentAtNode(container);
+    container.remove();
+    container = null;
+  });
+
   it("renders empty span for a post with no tags", () => {
     // Edge case
-    const wrapper = shallow(<Tags tags={[]} />);
-    expect(wrapper.find("Tag")).toHaveLength(0);
+    act(() => {
+      render(
+        <MemoryRouter>
+          <Tags tags={[]} />
+        </MemoryRouter>,
+        container
+      );
+    });
+    expect(container.querySelectorAll("a")).toHaveLength(0);
   });
 
   it("renders a single tag", () => {
     // Edge case
     const tags = ["Algorithms"];
-    const wrapper = shallow(<Tags tags={tags} />);
-    expect(wrapper.find("Tag")).toHaveLength(1);
+    act(() => {
+      render(
+        <MemoryRouter>
+          <Tags tags={tags} />
+        </MemoryRouter>,
+        container
+      );
+    });
+    expect(container.querySelectorAll("a")).toHaveLength(1);
   });
 
   it("renders multiple tags", () => {
     const tags = ["Algorithms", "Python"];
-    const wrapper = shallow(<Tags tags={tags} />);
-    expect(wrapper.find("Tag")).toHaveLength(2);
+    act(() => {
+      render(
+        <MemoryRouter>
+          <Tags tags={tags} />
+        </MemoryRouter>,
+        container
+      );
+    });
+    expect(container.querySelectorAll("a")).toHaveLength(tags.length);
   });
 
   test("<Tag /> navigates to correct route when clicked", () => {
     const tags = ["Algorithms", "Python"];
-    const wrapper = mount(
-      <MemoryRouter>
-        <Tags tags={tags} />
-      </MemoryRouter>
-    );
-    expect(wrapper.find("Link").first().props().to).toBe(
-      `/posts?tag=${tags[0]}`
-    );
+
+    act(() => {
+      render(
+        <MemoryRouter>
+          <Tags tags={tags} />
+        </MemoryRouter>,
+        container
+      );
+    });
+    const firstLink = container.querySelector("a").href;
+    expect(firstLink.endsWith(`/posts?tag=${tags[0]}`));
   });
 });

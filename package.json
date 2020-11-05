@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@types/compression": "^1.7.0",
-    "@types/enzyme": "^3.10.8",
     "@types/express": "^4.17.8",
     "@types/jest": "^26.0.15",
     "@types/morgan": "^1.9.2",
@@ -37,8 +36,6 @@
     "@types/webpack-env": "^1.15.3",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.5",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
