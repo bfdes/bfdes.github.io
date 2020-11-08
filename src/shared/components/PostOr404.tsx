@@ -34,9 +34,7 @@ const Post: React.FC<Post> = (props: Post) => {
 
 type Props = {
   slug: string;
-  context?: {
-    data: Post;
-  };
+  post?: Post;
 };
 
 type State = {
@@ -55,7 +53,7 @@ class PostOr404 extends React.Component<Props, State> {
       post = window.__INITIAL_DATA__ as Post;
       delete window.__INITIAL_DATA__;
     } else {
-      post = props.context.data;
+      post = props.post;
     }
 
     this.state = {
@@ -119,8 +117,8 @@ class PostOr404 extends React.Component<Props, State> {
 }
 
 const Wrapped: React.FC<Props> = (props: Props) => {
-  const data = React.useContext(Context.Post);
-  return <PostOr404 {...props} context={{ data }} />;
+  const post = React.useContext(Context.Post);
+  return <PostOr404 {...props} post={post} />;
 };
 
 export default Wrapped;

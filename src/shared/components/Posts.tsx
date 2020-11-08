@@ -28,13 +28,11 @@ const PostStub: React.FC<PostStub> = (props: PostStub) => {
 
 /*
 A tag may be supplied (by React Router) if the user has chosen to filter posts by tag.
-Additionally, if the component is server rendered, then we supply posts in advance ysing React's context API.
+Additionally, if the component is server rendered, then we supply posts in advance using React's context API.
 */
 type Props = {
   tag?: string;
-  context?: {
-    data: PostStub[];
-  };
+  posts?: PostStub[];
 };
 
 type State = {
@@ -60,7 +58,7 @@ class Posts extends React.Component<Props, State> {
       posts = window.__INITIAL_DATA__ as PostStub[];
       delete window.__INITIAL_DATA__; // (1)
     } else {
-      posts = props.context.data;
+      posts = props.posts;
     }
 
     this.state = {
@@ -149,8 +147,8 @@ class Posts extends React.Component<Props, State> {
 }
 
 const Wrapped: React.FC<Props> = (props: Props) => {
-  const data = React.useContext(Context.Posts);
-  return <Posts {...props} context={{ data }} />;
+  const posts = React.useContext(Context.Posts);
+  return <Posts {...props} posts={posts} />;
 };
 
 export default Wrapped;
