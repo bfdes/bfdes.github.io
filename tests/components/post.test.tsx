@@ -6,7 +6,6 @@ import { MemoryRouter, Route } from "react-router-dom";
 import { PostOr404 } from "shared/components";
 import { Context } from "shared/containers";
 import { withSlug } from "shared/hocs";
-import { RequestError } from "shared/http";
 
 let container: HTMLDivElement = null;
 
@@ -58,7 +57,7 @@ describe("<PostOr404 />", () => {
         render(
           <MemoryRouter>
             <Context.Post.Provider value={post}>
-              <PostOr404 get={jest.fn()} slug="test" />
+              <PostOr404 slug="test" />
             </Context.Post.Provider>
           </MemoryRouter>,
           container
@@ -73,14 +72,22 @@ describe("<PostOr404 />", () => {
       global.__isBrowser__ = true;
     });
 
+    afterEach(() => {
+      global.fetch.mockRestore();
+    });
+
     it("renders post", async () => {
-      const mockPromise = Promise.resolve(post);
-      const get = jest.fn(() => mockPromise);
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(post),
+        })
+      );
 
       await act(async () => {
         render(
           <MemoryRouter>
-            <PostOr404 get={get} slug="test" />
+            <PostOr404 slug="test" />
           </MemoryRouter>,
           container
         );
@@ -89,15 +96,45 @@ describe("<PostOr404 />", () => {
       expect(container.querySelectorAll(".post")).toHaveLength(1);
     });
 
-    it("renders <NoMatch /> when post does not exist", async () => {
-      const err = new RequestError(404, "404: No post with that slug");
-      const mockPromise = Promise.reject(err);
-      const get = jest.fn(() => mockPromise);
+    it("fetches the correct post", async () => {
+      const { slug } = post;
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(post),
+        })
+      );
 
       await act(async () => {
         render(
           <MemoryRouter>
-            <PostOr404 get={get} slug="test" />
+            <PostOr404 slug={slug} />
+          </MemoryRouter>,
+          container
+        );
+      });
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/posts/${slug}`,
+        expect.anything()
+      );
+    });
+
+    it("renders <NoMatch /> when post does not exist", async () => {
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: false,
+          status: 404,
+          json: () =>
+            Promise.resolve({
+              error: { message: "404: No post with that slug" },
+            }),
+        })
+      );
+
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <PostOr404 slug="test" />
           </MemoryRouter>,
           container
         );
@@ -106,30 +143,22 @@ describe("<PostOr404 />", () => {
       expect(container.querySelectorAll(".fourOhFour")).toHaveLength(1);
     });
 
-    it("fetches the correct post", async () => {
-      const { slug } = post;
-      const mockPromise = Promise.resolve(post);
-      const get = jest.fn(() => mockPromise);
-
-      await act(async () => {
-        render(
-          <MemoryRouter>
-            <PostOr404 get={get} slug={slug} />
-          </MemoryRouter>,
-          container
-        );
-      });
-      expect(get).toHaveBeenCalledWith(`/api/posts/${slug}`, expect.anything());
-    });
-
     it("renders error message for failed request", async () => {
-      const mockPromise = Promise.reject(new Error());
-      const get = jest.fn(() => mockPromise);
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: false,
+          status: 500,
+          json: () =>
+            Promise.resolve({
+              error: { message: "500: Internal Server error" },
+            }),
+        })
+      );
 
       await act(async () => {
         render(
           <MemoryRouter>
-            <PostOr404 get={get} slug="test" />
+            <PostOr404 slug="test" />
           </MemoryRouter>,
           container
         );

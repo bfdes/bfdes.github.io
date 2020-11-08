@@ -6,7 +6,6 @@ import { MemoryRouter, Route } from "react-router-dom";
 import { Posts } from "shared/components";
 import { Context } from "shared/containers";
 import { withTag } from "shared/hocs";
-import { RequestError } from "shared/http";
 
 let container: HTMLDivElement = null;
 
@@ -68,7 +67,7 @@ describe("<Posts />", () => {
         render(
           <MemoryRouter>
             <Context.Posts.Provider value={posts}>
-              <Posts get={jest.fn()} />
+              <Posts />
             </Context.Posts.Provider>
           </MemoryRouter>,
           container
@@ -77,12 +76,12 @@ describe("<Posts />", () => {
       expect(container.querySelectorAll(".post")).toHaveLength(posts.length);
     });
 
-    it("asks the reader to return", () => {
+    it("asks the reader to return when therer are no posts", () => {
       act(() => {
         render(
           <MemoryRouter>
             <Context.Posts.Provider value={[]}>
-              <Posts get={jest.fn()} />
+              <Posts />
             </Context.Posts.Provider>
           </MemoryRouter>,
           container
@@ -97,14 +96,22 @@ describe("<Posts />", () => {
       global.__isBrowser__ = true;
     });
 
+    afterEach(() => {
+      global.fetch.mockRestore();
+    });
+
     it("renders posts", async () => {
-      const mockPromise = Promise.resolve(posts);
-      const get = jest.fn(() => mockPromise);
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(posts),
+        })
+      );
 
       await act(async () => {
         render(
           <MemoryRouter>
-            <Posts get={get} />
+            <Posts />
           </MemoryRouter>,
           container
         );
@@ -113,14 +120,42 @@ describe("<Posts />", () => {
       expect(container.querySelectorAll(".post")).toHaveLength(posts.length);
     });
 
-    it("asks the reader to return", async () => {
-      const mockPromise = Promise.resolve([]);
-      const get = jest.fn(() => mockPromise);
+    it("renders posts with the correct tag", async () => {
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(posts),
+        })
+      );
+      const tag = "Algorithms";
 
       await act(async () => {
         render(
           <MemoryRouter>
-            <Posts get={get} />
+            <Posts tag={tag} />
+          </MemoryRouter>,
+          container
+        );
+      });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/posts?tag=${tag}`,
+        expect.anything()
+      );
+    });
+
+    it("asks the user to return when there are no posts", async () => {
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([]),
+        })
+      );
+
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <Posts />
           </MemoryRouter>,
           container
         );
@@ -128,34 +163,22 @@ describe("<Posts />", () => {
       expect(container.querySelectorAll(".error")).toHaveLength(1);
     });
 
-    it("renders posts with the correct tag", async () => {
-      const mockPromise = Promise.resolve(posts);
-      const get = jest.fn(() => mockPromise);
-      const tag = "Algorithms";
-
-      await act(async () => {
-        render(
-          <MemoryRouter>
-            <Posts tag={tag} get={get} />
-          </MemoryRouter>,
-          container
-        );
-      });
-
-      expect(get).toHaveBeenCalledWith(
-        `/api/posts?tag=${tag}`,
-        expect.anything()
-      );
-    });
-
     it("renders error message for failed request", async () => {
-      const mockPromise = Promise.reject(new RequestError(500, "Server Error"));
-      const get = jest.fn(() => mockPromise);
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: false,
+          status: 500,
+          json: () =>
+            Promise.resolve({
+              error: { message: "500: Internal Server error" },
+            }),
+        })
+      );
 
       await act(async () => {
         render(
           <MemoryRouter>
-            <Posts get={get} />
+            <Posts />
           </MemoryRouter>,
           container
         );

@@ -48,7 +48,7 @@ describe("<App />", () => {
     act(() => {
       render(
         <MemoryRouter initialEntries={["/about"]}>
-          <App get={jest.fn()} />
+          <App />
         </MemoryRouter>,
         container
       );
@@ -61,7 +61,7 @@ describe("<App />", () => {
     act(() => {
       render(
         <MemoryRouter initialEntries={["/random"]}>
-          <App get={jest.fn()} />
+          <App />
         </MemoryRouter>,
         container
       );
@@ -77,7 +77,7 @@ describe("<App />", () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
           <Context.Posts.Provider value={posts}>
-            <App get={jest.fn()} />
+            <App />
           </Context.Posts.Provider>
         </MemoryRouter>,
         container
@@ -94,7 +94,7 @@ describe("<App />", () => {
       render(
         <MemoryRouter initialEntries={["/posts"]}>
           <Context.Posts.Provider value={posts}>
-            <App get={jest.fn()} />
+            <App />
           </Context.Posts.Provider>
         </MemoryRouter>,
         container
@@ -112,7 +112,7 @@ describe("<App />", () => {
       render(
         <MemoryRouter initialEntries={[`/posts/${post.slug}`]}>
           <Context.Post.Provider value={post}>
-            <App get={jest.fn()} />
+            <App />
           </Context.Post.Provider>
         </MemoryRouter>,
         container

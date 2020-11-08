@@ -37,6 +37,7 @@ declare const __isBrowser__: boolean;
 declare namespace NodeJS {
   interface Global {
     __isBrowser__: boolean;
+    fetch: jest.Mock;
   }
 }
 
