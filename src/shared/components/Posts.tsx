@@ -6,6 +6,7 @@ import Date from "./Date";
 import Error from "./Error";
 import Spinner from "./Spinner";
 import Tags from "./Tags";
+import { get } from "shared/http";
 
 const PostStub: React.FC<PostStub> = (props: PostStub) => {
   const { title, slug, wordCount, created, tags } = props;
@@ -27,14 +28,11 @@ const PostStub: React.FC<PostStub> = (props: PostStub) => {
 
 /*
 A tag may be supplied (by React Router) if the user has chosen to filter posts by tag.
-Additionally, if the component is server rendered, then we supply posts in advance ysing React's context API.
+Additionally, if the component is server rendered, then we supply posts in advance using React's context API.
 */
 type Props = {
   tag?: string;
-  context?: {
-    data: PostStub[];
-  };
-  get(url: string, signal: AbortSignal): Promise<PostStub[]>;
+  posts?: PostStub[];
 };
 
 type State = {
@@ -60,7 +58,7 @@ class Posts extends React.Component<Props, State> {
       posts = window.__INITIAL_DATA__ as PostStub[];
       delete window.__INITIAL_DATA__; // (1)
     } else {
-      posts = props.context.data;
+      posts = props.posts;
     }
 
     this.state = {
@@ -136,8 +134,7 @@ class Posts extends React.Component<Props, State> {
   private fetchPosts(tag?: string): void {
     const url = `/api/posts${tag === undefined ? "" : `?tag=${tag}`}`;
     this.setState({ loading: true }, () =>
-      this.props
-        .get(url, this.controller.signal)
+      get<PostStub[]>(url, this.controller.signal)
         .then((posts) => this.setState({ posts, loading: false }))
         .catch((error) => {
           if (error.name !== "AbortError") {
@@ -150,8 +147,8 @@ class Posts extends React.Component<Props, State> {
 }
 
 const Wrapped: React.FC<Props> = (props: Props) => {
-  const data = React.useContext(Context.Posts);
-  return <Posts {...props} context={{ data }} />;
+  const posts = React.useContext(Context.Posts);
+  return <Posts {...props} posts={posts} />;
 };
 
 export default Wrapped;

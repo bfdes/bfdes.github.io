@@ -39,12 +39,12 @@ const posts = [
 const server = app(posts, "test");
 
 describe("GET /api/posts/:slug", () => {
-  test("post can be fetched by slug", () => {
+  it("fetches posts by slug", () => {
     const post = posts[0];
     return request(server).get(`/api/posts/${post.slug}`).expect(200);
   });
 
-  test("404 response returned for non-existent post", () =>
+  it("returns 404 response for non-existent posts", () =>
     request(server)
       .get("/api/posts/my-fourth-post")
       .expect(404)
@@ -56,7 +56,7 @@ describe("GET /api/posts/:slug", () => {
         })
       ));
 
-  test("posts are paged", () => {
+  it("returns paged posts", () => {
     const [first, second, third] = posts;
     return Promise.all([
       request(server)
@@ -96,11 +96,11 @@ describe("GET /posts/:slug", () => {
     global.__isBrowser__ = false;
   });
 
-  test("post can be fetched by slug", () => {
+  it("fetches posts by slug", () => {
     const post = posts[0];
     return request(server).get(`/posts/${post.slug}`).expect(200);
   });
 
-  test("404 response returned for non-existent post", () =>
+  it("returns 404 response for non-existent posts", () =>
     request(server).get("/posts/my-fourth-post").expect(404));
 });

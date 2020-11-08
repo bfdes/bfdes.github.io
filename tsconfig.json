@@ -4,14 +4,11 @@
     "paths": {
       "*": ["*", "src/*"]
     },
-    "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,
-    "resolveJsonModule": true,
     "module": "commonjs",
     "target": "es6",
     "lib": ["es2017", "dom"],
     "jsx": "react"
-  },
-  "exclude": ["node_modules"]
+  }
 }

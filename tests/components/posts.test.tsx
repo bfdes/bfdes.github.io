@@ -1,26 +1,39 @@
-import { mount } from "enzyme";
 import * as React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { Posts } from "shared/components";
 import { Context } from "shared/containers";
 import { withTag } from "shared/hocs";
-import { RequestError } from "shared/http";
+
+let container: HTMLDivElement = null;
+
+beforeEach(() => {
+  container = document.createElement("div");
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
 
 test("withTag", () => {
   const tag = "Python";
   const WithTag = withTag(({ tag }) => <>{tag}</>);
-  const wrapper = mount(
+  render(
     <MemoryRouter initialEntries={[`/posts?tag=${tag}`]}>
       <Routes>
         <Route path="posts" element={<WithTag />} />
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter>,
+    container
   );
-  expect(wrapper.text()).toBe(tag);
+  expect(container.textContent).toBe(tag);
 });
 
-// `Posts` instance is wrapped in a `MemoryRouter` because we render `Link`s when mount is invoked
 describe("<Posts />", () => {
   const summary = "Lorem ipsum";
   const wordCount = 5;
@@ -44,101 +57,133 @@ describe("<Posts />", () => {
     },
   ];
 
-  describe("<Posts /> on server", () => {
+  describe("on server", () => {
     beforeAll(() => {
       global.__isBrowser__ = false;
     });
 
-    it("displays posts", () => {
-      const wrapper = mount(
-        <MemoryRouter>
-          <Context.Posts.Provider value={posts}>
-            <Posts get={jest.fn()} />
-          </Context.Posts.Provider>
-        </MemoryRouter>
-      );
-      expect(wrapper.find(".post")).toHaveLength(posts.length);
+    it("renders posts", () => {
+      act(() => {
+        render(
+          <MemoryRouter>
+            <Context.Posts.Provider value={posts}>
+              <Posts />
+            </Context.Posts.Provider>
+          </MemoryRouter>,
+          container
+        );
+      });
+      expect(container.querySelectorAll(".post")).toHaveLength(posts.length);
     });
 
-    it("asks the reader to return", () => {
-      const wrapper = mount(
-        <MemoryRouter>
-          <Context.Posts.Provider value={[]}>
-            <Posts get={jest.fn()} />
-          </Context.Posts.Provider>
-        </MemoryRouter>
-      );
-      expect(wrapper.find(".error")).toHaveLength(1);
+    it("asks the reader to return when therer are no posts", () => {
+      act(() => {
+        render(
+          <MemoryRouter>
+            <Context.Posts.Provider value={[]}>
+              <Posts />
+            </Context.Posts.Provider>
+          </MemoryRouter>,
+          container
+        );
+      });
+      expect(container.querySelectorAll(".error")).toHaveLength(1);
     });
   });
 
-  describe("<Posts /> on client", () => {
+  describe("on client", () => {
     beforeAll(() => {
       global.__isBrowser__ = true;
     });
 
-    it("displays posts", () => {
-      const mockPromise = Promise.resolve(posts);
-      const get = jest.fn(() => mockPromise);
-
-      const wrapper = mount(
-        <MemoryRouter>
-          <Posts get={get} />
-        </MemoryRouter>
-      );
-      return mockPromise.then(() => {
-        expect(wrapper.update().find(".post")).toHaveLength(posts.length);
-      });
+    afterEach(() => {
+      global.fetch.mockRestore();
     });
 
-    it("asks the reader to return", () => {
-      const mockPromise = Promise.resolve([]);
-      const get = jest.fn(() => mockPromise);
-
-      const wrapper = mount(
-        <MemoryRouter>
-          <Posts get={get} />
-        </MemoryRouter>
+    it("renders posts", async () => {
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(posts),
+        })
       );
-      return mockPromise.then(() => {
-        expect(wrapper.update().find(".error")).toHaveLength(1);
-      });
-    });
 
-    it("fetches posts with the correct tag", () => {
-      const mockPromise = Promise.resolve(posts);
-      const get = jest.fn(() => mockPromise);
-      const tag = "Algorithms";
-
-      mount(
-        <MemoryRouter>
-          <Posts tag={tag} get={get} />
-        </MemoryRouter>
-      );
-      return mockPromise.then(() => {
-        expect(get).toHaveBeenCalledWith(
-          `/api/posts?tag=${tag}`,
-          expect.anything()
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <Posts />
+          </MemoryRouter>,
+          container
         );
       });
+
+      expect(container.querySelectorAll(".post")).toHaveLength(posts.length);
     });
 
-    it("displays error message for failed request", () => {
-      const mockPromise = Promise.reject(new RequestError(500, "Server Error"));
-      const get = jest.fn(() => mockPromise);
-
-      const wrapper = mount(
-        <MemoryRouter>
-          <Posts get={get} />
-        </MemoryRouter>
-      );
-      return mockPromise
-        .then(() => {
-          // Ref. https://github.com/airbnb/enzyme/issues/450#issuecomment-341244926
+    it("renders posts with the correct tag", async () => {
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(posts),
         })
-        .catch(() => {
-          expect(wrapper.update().find(".error")).toHaveLength(1);
-        });
+      );
+      const tag = "Algorithms";
+
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <Posts tag={tag} />
+          </MemoryRouter>,
+          container
+        );
+      });
+
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/posts?tag=${tag}`,
+        expect.anything()
+      );
+    });
+
+    it("asks the user to return when there are no posts", async () => {
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve([]),
+        })
+      );
+
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <Posts />
+          </MemoryRouter>,
+          container
+        );
+      });
+      expect(container.querySelectorAll(".error")).toHaveLength(1);
+    });
+
+    it("renders error message for failed request", async () => {
+      global.fetch = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: false,
+          status: 500,
+          json: () =>
+            Promise.resolve({
+              error: { message: "500: Internal Server error" },
+            }),
+        })
+      );
+
+      await act(async () => {
+        render(
+          <MemoryRouter>
+            <Posts />
+          </MemoryRouter>,
+          container
+        );
+      });
+      expect(container.querySelectorAll(".error")).toHaveLength(1);
     });
   });
 });

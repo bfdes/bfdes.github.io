@@ -33,10 +33,11 @@ declare module "*.svg" {
 // Read-only build flag set by Webpack
 declare const __isBrowser__: boolean;
 
-// Mutable flag set in Jest test code
+// Mocked values set in Jest test code
 declare namespace NodeJS {
   interface Global {
     __isBrowser__: boolean;
+    fetch: jest.Mock;
   }
 }
 

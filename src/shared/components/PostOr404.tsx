@@ -7,6 +7,7 @@ import NoMatch from "./NoMatch";
 import PaginationLink from "./PaginationLink";
 import Spinner from "./Spinner";
 import Tags from "./Tags";
+import { get } from "shared/http";
 
 const Post: React.FC<Post> = (props: Post) => {
   const { title, body, created, tags, wordCount, previous, next } = props;
@@ -33,10 +34,7 @@ const Post: React.FC<Post> = (props: Post) => {
 
 type Props = {
   slug: string;
-  context?: {
-    data: Post;
-  };
-  get(url: string, signal: AbortSignal): Promise<Post>;
+  post?: Post;
 };
 
 type State = {
@@ -55,7 +53,7 @@ class PostOr404 extends React.Component<Props, State> {
       post = window.__INITIAL_DATA__ as Post;
       delete window.__INITIAL_DATA__;
     } else {
-      post = props.context.data;
+      post = props.post;
     }
 
     this.state = {
@@ -107,8 +105,7 @@ class PostOr404 extends React.Component<Props, State> {
   private fetchPost(slug: string): void {
     const url = `/api/posts/${slug}`;
     this.setState({ loading: true }, () =>
-      this.props
-        .get(url, this.controller.signal)
+      get<Post>(url, this.controller.signal)
         .then((post) => this.setState({ post, loading: false }))
         .catch((error) => {
           if (error.name !== "AbortError") {
@@ -120,8 +117,8 @@ class PostOr404 extends React.Component<Props, State> {
 }
 
 const Wrapped: React.FC<Props> = (props: Props) => {
-  const data = React.useContext(Context.Post);
-  return <PostOr404 {...props} context={{ data }} />;
+  const post = React.useContext(Context.Post);
+  return <PostOr404 {...props} post={post} />;
 };
 
 export default Wrapped;

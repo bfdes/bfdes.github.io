@@ -3,7 +3,8 @@ import * as React from "react";
 import { renderToNodeStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 
-import { App, Context } from "shared/containers";
+import { App } from "shared/containers";
+import { Context } from "shared/containers";
 import DB from "shared/db";
 import { Favicon } from "shared/images";
 import { node, Attributes } from "./xml";

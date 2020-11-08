@@ -26,34 +26,40 @@ const posts = [
   },
 ];
 
+const postStubs = posts.map(({ body, ...stub }) => stub);
+
 const server = app(posts, "test");
 
 describe("GET /api/posts", () => {
-  test("all posts returned", () =>
+  it("returns all posts", () =>
     request(server)
       .get("/api/posts")
       .expect(200)
       .then((res) => {
-        expect(res.body.length).toBe(posts.length);
+        const actualPosts = new Set(res.body);
+        const expectedPosts = new Set(postStubs);
+        return expect(actualPosts).toEqual(expectedPosts);
       }));
 
-  test("posts filtered by tag", () => {
+  it("filters posts by tag", () => {
     const tag = "Algorithms";
-    const filtered = posts.filter((p) => p.tags.includes(tag));
+    const taggedPosts = postStubs.filter((p) => p.tags.includes(tag));
     return request(server)
       .get(`/api/posts?tag=${tag}`)
       .expect(200)
-      .then((res) => expect(res.body.length).toBe(filtered.length));
+      .then((res) => {
+        const actualPosts = new Set(res.body);
+        const expectedPosts = new Set(taggedPosts);
+        return expect(actualPosts).toEqual(expectedPosts);
+      });
   });
 
-  test("posts returned in sorted order", () => {
-    const sorted = posts
-      .map(({ body, ...stub }) => stub)
-      .sort((p, q) => q.created - p.created);
+  it("returns posts in reverse chronological order", () => {
+    const orderedPosts = postStubs.sort((p, q) => q.created - p.created);
     return request(server)
       .get("/api/posts")
       .expect(200)
-      .then((res) => expect(res.body).toEqual(sorted));
+      .then((res) => expect(res.body).toEqual(orderedPosts));
   });
 });
 
@@ -62,9 +68,9 @@ describe("GET /posts", () => {
     global.__isBrowser__ = false;
   });
 
-  test("all posts returned", () => request(server).get("/posts").expect(200));
+  it("returns all posts", () => request(server).get("/posts").expect(200));
 
-  test("root request serves same content as /posts", () =>
+  it("serves same content as root request", () =>
     request(server)
       .get("/")
       .then((res) =>
@@ -73,16 +79,17 @@ describe("GET /posts", () => {
           .then((res2) => expect(res.text).toEqual(res2.text))
       ));
 
-  test("posts filtered by tag", () => {
+  it("filters posts by tag", () => {
     const tag = "Algorithms";
-    const filtered = posts.filter((p) => p.tags.includes(tag));
+    const taggedPosts = posts.filter((p) => p.tags.includes(tag));
     return request(server)
       .get(`/posts?tag=${tag}`)
       .expect(200)
       .then((res) => {
         const elem = /<li class="post">/g;
-        const count = (res.text.match(elem) || []).length;
-        return expect(count).toBe(filtered.length);
+        const actualCount = (res.text.match(elem) || []).length;
+        const expectedCount = taggedPosts.length;
+        return expect(actualCount).toBe(expectedCount);
       });
   });
 });

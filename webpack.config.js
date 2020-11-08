@@ -1,9 +1,18 @@
 const webpack = require("webpack");
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = [
   {
     entry: path.resolve(__dirname, "./src/browser", "index.tsx"),
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+        }),
+      ],
+    },
     output: {
       filename: "javascripts/bundle.js",
       publicPath: "/static/", // public URL of the output directory when referenced in a browser
@@ -57,6 +66,14 @@ module.exports = [
   },
   {
     entry: path.resolve(__dirname, "./src/server", "index.ts"),
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+        }),
+      ],
+    },
     output: {
       filename: "server.js",
       publicPath: "/",

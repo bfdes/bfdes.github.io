@@ -28,7 +28,7 @@ export default function (posts: Post[], mode = "test"): RequestListener {
 
   // ii) static server w/ gzip compression
   app.use(compression());
-  app.use("/static", express.static(path.resolve("dist", "static")));
+  app.use("/static", express.static(path.resolve(__dirname, "static")));
 
   // iii) router
   const db = new DB(posts);
