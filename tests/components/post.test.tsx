@@ -25,7 +25,7 @@ test("withSlug", () => {
   const WithSlug = withSlug(({ slug }) => <>{slug}</>);
   render(
     <MemoryRouter initialEntries={[`/posts/${slug}`]}>
-      <Routes basename="/posts">
+      <Routes basename="posts">
         <Route path=":slug" element={<WithSlug />} />
       </Routes>
     </MemoryRouter>,

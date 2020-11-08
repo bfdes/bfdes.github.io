@@ -25,8 +25,8 @@ test("withTag", () => {
   const WithTag = withTag(({ tag }) => <>{tag}</>);
   render(
     <MemoryRouter initialEntries={[`/posts?tag=${tag}`]}>
-      <Routes>
-        <Route path="posts" element={<WithTag />} />
+      <Routes basename="posts">
+        <Route element={<WithTag />} />
       </Routes>
     </MemoryRouter>,
     container
