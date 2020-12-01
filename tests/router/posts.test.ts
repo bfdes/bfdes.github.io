@@ -26,48 +26,9 @@ const posts = [
   },
 ];
 
-const postStubs = posts.map(({ body, ...stub }) => stub);
-
 const server = app(posts, "test");
 
-describe("GET /api/posts", () => {
-  it("returns all posts", () =>
-    request(server)
-      .get("/api/posts")
-      .expect(200)
-      .then((res) => {
-        const actualPosts = new Set(res.body);
-        const expectedPosts = new Set(postStubs);
-        return expect(actualPosts).toEqual(expectedPosts);
-      }));
-
-  it("filters posts by tag", () => {
-    const tag = "Algorithms";
-    const taggedPosts = postStubs.filter((p) => p.tags.includes(tag));
-    return request(server)
-      .get(`/api/posts?tag=${tag}`)
-      .expect(200)
-      .then((res) => {
-        const actualPosts = new Set(res.body);
-        const expectedPosts = new Set(taggedPosts);
-        return expect(actualPosts).toEqual(expectedPosts);
-      });
-  });
-
-  it("returns posts in reverse chronological order", () => {
-    const orderedPosts = postStubs.sort((p, q) => q.created - p.created);
-    return request(server)
-      .get("/api/posts")
-      .expect(200)
-      .then((res) => expect(res.body).toEqual(orderedPosts));
-  });
-});
-
 describe("GET /posts", () => {
-  beforeAll(() => {
-    global.__isBrowser__ = false;
-  });
-
   it("returns all posts", () => request(server).get("/posts").expect(200));
 
   it("serves same content as root request", () =>
@@ -83,7 +44,7 @@ describe("GET /posts", () => {
     const tag = "Algorithms";
     const taggedPosts = posts.filter((p) => p.tags.includes(tag));
     return request(server)
-      .get(`/posts?tag=${tag}`)
+      .get(`/tags/${tag}`)
       .expect(200)
       .then((res) => {
         const elem = /<li class="post">/g;

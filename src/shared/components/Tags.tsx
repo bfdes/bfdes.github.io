@@ -6,7 +6,7 @@ type Tag = {
 };
 
 const Tag: React.FC<Tag> = ({ value }: Tag) => (
-  <Link to={`/posts?tag=${value}`}>{value}</Link>
+  <Link to={`/tags/${value}`}>{value}</Link>
 );
 
 type Tags = {

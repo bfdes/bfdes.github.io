@@ -1,12 +1,8 @@
 import * as React from "react";
 import { Route, Routes } from "react-router-dom";
-import { About, NoMatch, Sidebar } from "../components";
-import * as Components from "../components";
-import { withSlug, withTag } from "../hocs";
+import { About, NoMatch, Sidebar, Posts, PostOr404 } from "../components";
 
 const App: React.FC = () => {
-  const PostOr404 = withSlug(Components.PostOr404);
-  const Posts = withTag(Components.Posts);
   return (
     <>
       <Route element={<Sidebar />} />
@@ -17,6 +13,9 @@ const App: React.FC = () => {
           <Route path="posts">
             <Route element={<Posts />} />
             <Route path=":slug" element={<PostOr404 />} />
+          </Route>
+          <Route path="tags">
+            <Route path=":tag" element={<Posts />} />
           </Route>
           <Route path="*" element={<NoMatch />} />
         </Routes>

@@ -71,8 +71,6 @@ describe("<App />", () => {
   });
 
   it("renders <Posts /> for root page", () => {
-    global.__isBrowser__ = false;
-
     act(() => {
       render(
         <MemoryRouter initialEntries={["/"]}>
@@ -88,8 +86,6 @@ describe("<App />", () => {
   });
 
   it("renders <Posts /> for /posts", () => {
-    global.__isBrowser__ = false;
-
     act(() => {
       render(
         <MemoryRouter initialEntries={["/posts"]}>
@@ -105,7 +101,6 @@ describe("<App />", () => {
   });
 
   it("renders a <Post /> for /posts/:slug", () => {
-    global.__isBrowser__ = false;
     const post = posts[0];
 
     act(() => {
