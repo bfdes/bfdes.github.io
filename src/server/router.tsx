@@ -136,7 +136,7 @@ export default function (db: DB): Router {
     const rss = node("rss", [channel], new Attributes([["version", "1.0"]]));
     const prolog = `<?xml version="1.0" encoding="utf-8"?>`;
     res.type("application/xml");
-    res.send(`${prolog}${rss.render()}`);
+    res.send(`${prolog}${rss}`);
   });
 
   // 404 handler

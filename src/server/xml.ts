@@ -16,7 +16,6 @@ export class Attributes extends Map<string, string> {
 export interface Tree {
   readonly name: string;
   readonly attributes: Attributes;
-  render(): string;
 }
 
 export class Leaf implements Tree {
@@ -32,7 +31,7 @@ export class Leaf implements Tree {
     this.content = content;
     this.attributes = attributes;
   }
-  render(): string {
+  toString(): string {
     const { name, content, attributes } = this;
     if (content && attributes.size) {
       return `<${name} ${attributes}>${content}</${name}>`;
@@ -60,9 +59,9 @@ export class Branch implements Tree {
     this.children = children;
     this.attributes = attributes;
   }
-  render(): string {
+  toString(): string {
     const { name, attributes, children } = this;
-    const content = children.map((child) => child.render()).join("");
+    const content = children.join("");
     const openingTag = attributes.size
       ? `<${name} ${attributes}>`
       : `<${name}>`; // Handle whitespace

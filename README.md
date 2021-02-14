@@ -1,6 +1,6 @@
 # bfdes.in
 
-[![GitHub Actions](https://github.com/bfdes/bfdes.in/workflows/Test/badge.svg?branch=master)](https://github.com/bfdes/bfdes.in/actions?query=workflow%3ATest)
+![GitHub Actions](https://github.com/bfdes/bfdes.in/workflows/Test/badge.svg)
 [![Codecov](https://codecov.io/gh/bfdes/bfdes.in/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.in)
 
 Source for my personal blog, built using React SSR and written in TypeScript.
@@ -50,17 +50,9 @@ GitHub Actions will also run this test suite for every PR.
 
 ## Deployment
 
-### Bare metal or VM
-
 Running `yarn build:prod` generates two bundles
 
 - Client code under the /static folder
 - A single file of server-side code
 
 Run the server-side code using Node.js, and optionally configure a webserver to serve assets under /static.
-
-### Container
-
-Running `docker build .` builds a creates a container image that wraps the server and client bundles.
-
-GitHub Actions will also build an image for every release and code push to master.

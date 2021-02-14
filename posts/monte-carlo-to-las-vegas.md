@@ -7,7 +7,7 @@ summary: Trading performance for code reuse and readability in algorithm API des
 
 Recently I have been writing an algorithms library while following Computer Science courses to understand better the fundamental data structures that underpin modern computing. In the process, I have gained an appreciation of the benefits of good API design.
 
-Sometimes, but not always, the goal of exposing a lean library API conflicts with that of writing performant code. Let us look at one such situation that I encountered while writing [Treadstone](https://github.com/bfdes/Treadstone).
+Sometimes, but not always, the goal of exposing a lean library API conflicts with that of writing performant code. Let us look at one such situation that I encountered while writing [Collections](https://github.com/bfdes/Collections).
 
 The Monte Carlo class of algorithms are those which we can guarantee to terminate in finite time, but which may yield an incorrect result now and then. A Las Vegas algorithm, on the other hand, is guaranteed to produce a correct result, but we might only be able to obtain a probabilistic measure of its runtime.
 
@@ -21,7 +21,7 @@ $$
 
 where $i \in I$ if the substring is found, and $i = -1$ otherwise.
 
-The goal is to enable the client to write Las Vegas variant in terms of the Monte Carlo variant $f$, so that the library only has to export one implementation of Rabin Karp.
+The goal is to enable the client to write Las Vegas variant in terms of the Monte Carlo variant $f$ so that the library only has to export one implementation of Rabin Karp.
 
 ## Rabin-Karp
 
@@ -94,7 +94,7 @@ So what is the problem with reusing code? Well, there are a couple of penalties 
 - When working in a language that does not come with a tail-call optimising compiler, we must use an iterative version of `las_vegas` to prevent high stack usage.
 - Performing the equality check outside `monte_carlo` means we lose access to the rolling hash within the closure. We can only avoid recomputing it by writing the implementation from scratch.
 
-The library can support just the Monte Carlo implementation if it is not likely to be used in situations where false positive matches are unacceptable. Unfortunately, generally speaking, library authors cannot be sure that their code will not be used in pathological cases.
+The library can support just the Monte Carlo implementation if it is not likely to be used in situations where false positive matches are unacceptable. Unfortunately, generally speaking, library authors cannot be sure that their code won't be used in pathological cases.
 
 ## Acknowledgements
 

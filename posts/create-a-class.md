@@ -37,7 +37,7 @@ $$
 
 The second property corresponds to the non-satiation assumption in utility theory.
 
-The attribute vector itself comprises of a base term $\mathbf{x_0}$ and the sum of attachment contributions. If we denote the presence of the j-th attachment in the i-th slot by a boolean variable $X_{ij} \in \{0, 1\}$, we can then write
+The attribute vector itself comprises of a base term $\mathbf{x_0}$ and the sum of attachment contributions. If we denote the presence of the _j-th_ attachment in the _i-th_ slot by a boolean variable $X_{ij} \in \{0, 1\}$, we can then write
 
 $$
 \mathbf{x} = \mathbf{x_0} + \displaystyle\sum_i^m \displaystyle\sum_j^{n_i} X_{ij}\mathbf{\Delta x}_{ij}
@@ -70,6 +70,8 @@ $$
       &= (1+3)^5 = 1024
 \end{aligned}
 $$
+
+Note: The binomial theorem was used to derive the last line.
 
 Now suppose $n_i \leq 9 \ \forall \ i$, and $m \leq 7$, again for all weapons. This leads us to an upper bound:
 
@@ -198,7 +200,7 @@ public interface Optimizer<I, O> {
 }
 ```
 
-We also rely on data classes `Attachment`, `Slot`, and `Weapon` to encapsulate domain interactions:
+We also rely on records `Attachment`, `Slot`, and `Weapon` to encapsulate domain interactions:
 
 ```java
 public record Attachment(List<Double> attributes) {
@@ -270,7 +272,7 @@ public class ChosenAttachments extends HashMap<Slot, Attachment> {
 
 So far, the algorithm we have devised finds the best **loadout** for a playstyle, _given_ a weapon. We can do better and determine the best loadout among all weapon and attachment permutations.
 
-Observe that attachment choice is tied solely to weapon choice. So we can decompose the problem by:
+Observe that attachment choice is tied to weapon choice. So we can decompose the problem by:
 
 1. maximising utility for every weapon independently (as before), and,
 2. finding the weapon in this set with the largest utility.
@@ -300,19 +302,19 @@ public class LoadoutOptimizer implements Optimizer<List<Weapon>, Loadout> {
 
 Note that this optimizer accepts _any_ underlying weapon optimizer conforming to the `Optimizer<Weapon, Loadout>` interface. Stub implementations can be readily inserted to run tests that only check the behaviour of code in `LoadoutOptimizer`.
 
-The algorithm is efficient only because there are a limited number of weapons in-game (about 30). As a result, it could run in request threads of a web service designed to respond to queries for the best loadout.
+The algorithm is efficient only because there are a limited number of weapons in-game (about 30). As a result, it could run directly in the request threads of a web service designed to respond to queries for the best loadout. It is not limited to running as part of a CLI program or asynchronous batch job.
 
 A **class** is typically comprised of:
 
 - A long gun
 - A sidearm
 - Two pieces of explosive or tactical equipment
-- Three Perks
+- Three "Perks" (special abilities)
 
 Optimising for the best class is more of an art than a science. For this reason, it is not worth attempting.
 
 ## Model correctness
 
-It is difficult to verify the usefulness of applying utility-theory in this context mainly because of the lack of in-game weapon data. At the time of writing this article, most weapon data [reported online](https://www.reddit.com/r/modernwarfare/comments/dslu8z/modern_warfare_2019_weapon_damage_guide_excel) has been obtained experimentally and is far from being exhaustive.
+It is difficult to verify the usefulness of applying utility-theory in this context mainly because of the lack of in-game weapon data. At the time of writing this article, most weapon data [reported online](https://www.reddit.com/r/modernwarfare/comments/dslu8z/modern_warfare_2019_weapon_damage_guide_excel) for Modern Warfare has been obtained experimentally and is far from being exhaustive.
 
 Additionally, recall that modifications do not have independent effects; this makes it harder to determine raw weapon data from experiments.
