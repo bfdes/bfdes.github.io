@@ -1,12 +1,10 @@
 import * as React from "react";
-import { MemoryRouter } from "react-router-dom";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-import { PostOr404 } from "shared/components";
-import { Context } from "shared/containers";
+import { Post, PaginationLink } from "src/components";
 
-let container: HTMLDivElement = null;
+let container: HTMLDivElement;
 
 beforeEach(() => {
   container = document.createElement("div");
@@ -16,33 +14,60 @@ beforeEach(() => {
 afterEach(() => {
   unmountComponentAtNode(container);
   container.remove();
-  container = null;
 });
 
 describe("<Post />", () => {
   const post = {
-    title: "My second post",
-    slug: "my-second-post",
-    summary: "Lorem ipsum",
+    title: "My first post",
+    summary: "Lorem ipsum delorum sit amet",
     body: "Lorem ipsum delorum sit amet",
-    wordCount: 5,
+    slug: "my-first-post",
+    created: new Date("2018-07-22"),
     tags: ["Algorithms", "Java"],
-    created: 1523401200000,
-    previous: "my-first-post",
-    next: "my-third-post",
+    wordCount: 1,
   };
 
-  it("renders post", () => {
+  it("renders metadata", () => {
+    act(() => {
+      render(<Post value={post} />, container);
+    });
+    expect(container.querySelectorAll(".meta")).toHaveLength(1);
+  });
+
+  it("renders body", () => {
+    act(() => {
+      render(<Post value={post} />, container);
+    });
+    expect(container.querySelectorAll(".body")).toHaveLength(1);
+  });
+
+  it("renders pagination bar", () => {
+    act(() => {
+      render(<Post value={post} />, container);
+    });
+    expect(container.querySelectorAll(".pagination")).toHaveLength(1);
+    expect(container.querySelectorAll(".pagination-item")).toHaveLength(2);
+  });
+});
+
+describe("<PaginationLink />", () => {
+  const msg = "Next post";
+
+  it("renders link", () => {
     act(() => {
       render(
-        <MemoryRouter>
-          <Context.Post.Provider value={post}>
-            <PostOr404 />
-          </Context.Post.Provider>
-        </MemoryRouter>,
+        <PaginationLink next="my-second-post">{msg}</PaginationLink>,
         container
       );
     });
-    expect(container.querySelectorAll(".post")).toHaveLength(1);
+    const link = container.querySelector("a").href;
+    expect(link).toMatch(/\/posts\/my-second-post.html$/);
+  });
+
+  it("renders message", () => {
+    act(() => {
+      render(<PaginationLink>{msg}</PaginationLink>, container);
+    });
+    expect(container.querySelector("span").textContent).toBe(msg);
   });
 });

@@ -1,4 +1,4 @@
-import { Attributes, node } from "server/xml";
+import { Attributes, node } from "src/xml";
 
 const attributes = new Attributes([
   ["key1", "value1"],
@@ -13,14 +13,14 @@ describe("Leaf.toString", () => {
 
   it("serializes content", () => {
     const leaf = node("leaf", "content");
-    expect(leaf.toString()).toEqual("<leaf>content</leaf>");
+    expect(leaf.toString()).toBe("<leaf>content</leaf>");
   });
 
   it("serializes self-closing tags", () => {
     let leaf = node("leaf");
-    expect(leaf.toString()).toEqual("<leaf />");
+    expect(leaf.toString()).toBe("<leaf />");
     leaf = node("leaf", "", attributes);
-    expect(leaf.toString()).toEqual('<leaf key1="value1" key2="value2" />');
+    expect(leaf.toString()).toBe('<leaf key1="value1" key2="value2" />');
   });
 });
 
@@ -34,7 +34,7 @@ describe("Branch.toString", () => {
   it("serializes nested elements", () => {
     const leaf = node("leaf", "content");
     const root = node("root", [leaf]);
-    expect(root.toString()).toEqual("<root><leaf>content</leaf></root>");
+    expect(root.toString()).toBe("<root><leaf>content</leaf></root>");
   });
 
   it("serializes siblings", () => {
@@ -42,7 +42,7 @@ describe("Branch.toString", () => {
     const item1 = node("item", "Hello");
     const item2 = node("item", "World");
     const root = node("root", [author, item1, item2]);
-    expect(root.toString()).toEqual(
+    expect(root.toString()).toBe(
       "<root><author>John Doe</author><item>Hello</item><item>World</item></root>"
     );
   });

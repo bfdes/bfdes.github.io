@@ -171,7 +171,7 @@ function wordCount(tree) {
   }
   return (tree.children || [])
     .map(wordCount)
-    .reduce((count, childCount) => count + childCount, 0);
+    .reduce((sum, count) => sum + count, 0);
 }
 ```
 

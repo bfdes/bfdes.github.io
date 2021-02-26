@@ -2,30 +2,21 @@ import * as React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-import Date from "shared/components/Date";
+import { Date } from "src/components";
+
+let container: HTMLDivElement;
+
+beforeEach(() => {
+  container = document.createElement("div");
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  unmountComponentAtNode(container);
+  container.remove();
+});
 
 describe("<Date />", () => {
-  let container: HTMLDivElement = null;
-
-  beforeEach(() => {
-    container = document.createElement("div");
-    document.body.appendChild(container);
-  });
-
-  afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-  });
-
-  it("renders UNIX birthday", () => {
-    act(() => {
-      render(<Date timestamp={0} />, container);
-    });
-
-    expect(container.textContent).toBe("1 January 1970");
-  });
-
   it("renders current time", () => {
     const monthNames = [
       "January",
@@ -48,7 +39,7 @@ describe("<Date />", () => {
     const year = now.getFullYear();
 
     act(() => {
-      render(<Date timestamp={now.getTime()} />, container);
+      render(<Date value={now} />, container);
     });
     expect(container.textContent).toBe(`${day} ${month} ${year}`);
   });

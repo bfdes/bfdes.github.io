@@ -1,5 +1,7 @@
-// Built files and vendor
+// Dependencies
 node_modules
+
+// Built files
 dist
 coverage
 

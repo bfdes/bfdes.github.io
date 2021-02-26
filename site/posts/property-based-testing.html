@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="theme-color" content="#202020"/><meta name="description" content="Personal blog"/><meta name="author" content="Bruno Fernandes"/><title>bfdes.in</title><link href="/images/favicon.png" rel="icon"/><link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono&amp;display=swap" rel="stylesheet"/><link href="https://unpkg.com/highlight.js@10.3.1/styles/github.css" rel="stylesheet"/><link href="https://unpkg.com/katex@0.12.0/dist/katex.min.css" rel="stylesheet"/><link href="/styles/main.css" rel="stylesheet"/></head><body><div id="root"><aside id="sidebar"><img class="avatar" src="/images/avatar.jpg" alt="Profile photo"/><div id="nav"><a class="nav-item" href="/posts"><h2>Blog</h2></a><a class="nav-item" href="/about.html"><h2>About</h2></a></div><div id="social"><a class="nav-item" href="https://www.github.com/bfdes"><img class="badge" src="/images/github.png" alt="GitHub link"/></a><a class="nav-item" href="/feed.rss"><img class="badge" src="/images/rss.png" alt="RSS link"/></a></div></aside><div id="content"><div class="post"><h1>Property-based testing</h1><p class="meta">15 October 2018 · <span> # <a href="/tags/testing.html">Testing</a></span> · 955 words</p><div class="body"><p>Today we discuss why property-based testing is a useful tool for verifying the correctness of complex programs. In addition, we apply the technique to test a sample algorithm comprehensively -- without and then with the aid of a testing library.</p>
+<p>We will write the test code in Scala. Scala is fundamentally a functional programming language that retains some imperative language constructs. Knowledge of Scala is not required to follow this post, but it could help you focus on the idea being presented, as opposed to language semantics.</p>
+<p>The completed test suite is hosted on GitHub as a <a href="https://gist.github.com/bfdes/88f3292aa2d23e619714bee4221799d8">gist</a> for reference.</p>
+<h2>What is Property-based testing?</h2>
+<p>Property-based testing involves providing a set of properties for the function or method under test. Effectively, we define a specification that our implementation should meet.</p>
+<p>The usual approach, writing a limited set of assertions, may be satisfactory when testing simple logic:</p>
+<blockquote>
+<p>"<strong>it</strong> redirects an unauthenticated user to login".</p>
+</blockquote>
+<p>But it is not necessarily sufficient when our outcomes are not binary:</p>
+<blockquote>
+<p>"<strong>it</strong> always returns a uniformly distributed random integer".</p>
+</blockquote>
+<p>Property-based testing has its origins in functional programming, where data is modelled immutably, and functions are pure. Specifying properties has a direct correspondence to the way proofs of correctness are constructed in maths.</p>
+<p>Consider the addition operation on integers. What conditions does it meet?</p>
+<ul>
+<li>
+<p>Associativity:</p>
+<div class="math math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mo fence="true">(</mo><mi>i</mi><mo>+</mo><mi>j</mi><mo fence="true">)</mo></mrow><mo>+</mo><mi>k</mi><mo>=</mo><mi>i</mi><mo>+</mo><mrow><mo fence="true">(</mo><mi>j</mi><mo>+</mo><mi>k</mi><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\left( i + j \right) + k = i + \left( j + k \right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span></span></div>
+</li>
+<li>
+<p>Identity:</p>
+<div class="math math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>i</mi><mo>+</mo><mn>0</mn><mo>=</mo><mn>0</mn><mo>+</mo><mi>i</mi><mo>=</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">i + 0 = 0 + i = i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal">i</span></span></span></span></span></div>
+</li>
+<li>
+<p>Commutativity:</p>
+<div class="math math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>i</mi><mo>+</mo><mi>j</mi><mo>=</mo><mi>j</mi><mo>+</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">i + j = j + i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal">i</span></span></span></span></span></div>
+</li>
+</ul>
+<p>where <span class="math math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo separator="true">,</mo><mi>k</mi><mo>∈</mo><mi mathvariant="double-struck">Z</mi></mrow><annotation encoding="application/x-tex">i, j, k \in \mathbb{Z}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68889em;vertical-align:0em;"></span><span class="mord"><span class="mord mathbb">Z</span></span></span></span></span></span>.</p>
+<p>We can assert that these properties hold by verifying that they apply for arbitrary integer triples. In a similar manner, property-based testing can also be employed to check algorithms that effect mutable data. We use it to test an implementation of mergesort.</p>
+<h2>Mergesort</h2>
+<p>This implementation of mergesort is transcribed to Scala from Algorithms I by Sedgewick and Wayne.</p>
+<p>It consists of two subroutines:</p>
+<ol>
+<li>Split the array in two, recursively sorting each partition</li>
+<li>Merge the sorted partitions</li>
+</ol>
+<pre><code class="hljs language-scala"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Sorting</span> </span>{
+  <span class="hljs-comment">/**
+    * Sorts an array with respect to an `Ordering`, using the mergesort algorithm.
+    */</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mergeSort</span></span>[<span class="hljs-type">T</span>: <span class="hljs-type">ClassTag</span>](a: <span class="hljs-type">Array</span>[<span class="hljs-type">T</span>])(<span class="hljs-keyword">implicit</span> o: <span class="hljs-type">Ordering</span>[<span class="hljs-type">T</span>]): <span class="hljs-type">Unit</span> = {
+    <span class="hljs-keyword">val</span> aux = <span class="hljs-keyword">new</span> <span class="hljs-type">Array</span>[<span class="hljs-type">T</span>](a.length)  <span class="hljs-comment">// Use a common auxiliary array</span>
+
+    <span class="hljs-comment">// Sort the subsequence [l, h]</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sort</span></span>(l: <span class="hljs-type">Int</span>, h: <span class="hljs-type">Int</span>): <span class="hljs-type">Unit</span> = {
+      <span class="hljs-keyword">if</span>(l &#x3C; h) {
+        <span class="hljs-keyword">val</span> m = l + (h-l) / <span class="hljs-number">2</span>  <span class="hljs-comment">// account for integer overflow</span>
+        sort(l, m)
+        sort(m+<span class="hljs-number">1</span>, h)
+        <span class="hljs-keyword">if</span>(o.gt(a(m), a(m+<span class="hljs-number">1</span>))) {
+          merge(l, m, h)  <span class="hljs-comment">// only merge if [l, h] is not in order</span>
+        }
+      }
+    }
+
+    <span class="hljs-comment">// Merge the sorted subsequences [l, m] and (m, h]</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">merge</span></span>(l: <span class="hljs-type">Int</span>, m: <span class="hljs-type">Int</span>, h: <span class="hljs-type">Int</span>): <span class="hljs-type">Unit</span> = {
+      <span class="hljs-keyword">for</span>(i &#x3C;- l until h+<span class="hljs-number">1</span>){
+        aux(i) = a(i)
+      }
+
+      <span class="hljs-keyword">var</span> i = l
+      <span class="hljs-keyword">var</span> j = m + <span class="hljs-number">1</span>
+      <span class="hljs-keyword">for</span>(k &#x3C;- l until h+<span class="hljs-number">1</span>) {
+        <span class="hljs-keyword">if</span>(i > m) {
+          a(k) = aux(j)
+          j += <span class="hljs-number">1</span>
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(j > h) {
+          a(k) = aux(i)
+          i += <span class="hljs-number">1</span>
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(o.lt(aux(j), aux(i))) {
+          a(k) = aux(j)
+          j += <span class="hljs-number">1</span>
+        } <span class="hljs-keyword">else</span> {
+          a(k) = aux(i)
+          i += <span class="hljs-number">1</span>
+        }  <span class="hljs-comment">// n.b. Stable implementation of the algorithm</span>
+      }
+    }
+    sort(<span class="hljs-number">0</span>, a.length<span class="hljs-number">-1</span>)  <span class="hljs-comment">// run the routine on the whole array</span>
+  }
+}
+</code></pre>
+<p>Marking the <code>Ordering</code> parameter as <code>implicit</code> tells the compiler to "look" for an instance in scope if it has not been passed-in by the caller. Many built-in types, such as <code>Int</code>, come with an <code>Ordering</code> defined.</p>
+<p>Note that we have to use <a href="https://docs.scala-lang.org/overviews/reflection/typetags-manifests.html"><code>ClassTags</code></a> to account for JVM type-erasure.</p>
+<p>The <code>Sorting</code> namespace is also an appropriate place to keep a utility to check array elements are ordered:</p>
+<pre><code class="hljs language-scala"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">isSorted</span></span>[<span class="hljs-type">T</span>](a: <span class="hljs-type">Array</span>[<span class="hljs-type">T</span>])(<span class="hljs-keyword">implicit</span> o: <span class="hljs-type">Ordering</span>[<span class="hljs-type">T</span>]): <span class="hljs-type">Boolean</span> = {
+  <span class="hljs-keyword">val</span> indices = <span class="hljs-number">0</span> until a.length<span class="hljs-number">-1</span>
+  <span class="hljs-keyword">val</span> shifted = <span class="hljs-number">1</span> until a.length
+  indices
+    .zip(shifted)
+    .forall { <span class="hljs-keyword">case</span> (i, j) => o.lteq(a(i), a(j)) }
+}
+</code></pre>
+<h2>Testing "by hand"</h2>
+<p>A sorting function is defined by two properties:</p>
+<ol>
+<li>
+<p>It must permute its <strong>input</strong> to form its <strong>output</strong></p>
+<div class="math math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mrow><mo fence="true">(</mo><msub><mi>a</mi><mi>i</mi></msub><mo>∣</mo><mi>i</mi><mo>∈</mo><mi>I</mi><mo fence="true">)</mo></mrow><mo>=</mo><mrow><mo fence="true">(</mo><msubsup><mi>a</mi><mi>i</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msubsup><mo>∣</mo><mi>i</mi><mo>∈</mo><mi>I</mi><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\left(a_i \mid i \in I \right) = \left(a'_i \mid i \in I \right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.051892em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8018919999999999em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span></span></div>
+</li>
+<li>
+<p>It must totally-order its input to form its output (the comparer defines the total-ordering)</p>
+<div class="math math-display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mi>a</mi><mi>i</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msubsup><mo>≤</mo><msubsup><mi>a</mi><mi>j</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msubsup><mtext> </mtext><mi mathvariant="normal">∀</mi><mtext> </mtext><mi>i</mi><mo separator="true">,</mo><mi>j</mi><mo>∈</mo><mi>I</mi><mtext> s.t. </mtext><mi>i</mi><mo>&#x3C;</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">a'_i \leq a'_j \space \forall \space i, j \in I \space \text{s.t.} \space i &#x3C; j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.048892em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8018919999999999em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.185em;vertical-align:-0.383108em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.1130000000000004em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.383108em;"><span></span></span></span></span></span></span><span class="mspace"> </span><span class="mord">∀</span><span class="mspace"> </span><span class="mord mathnormal">i</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace"> </span><span class="mord text"><span class="mord">s.t.</span></span><span class="mspace"> </span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x3C;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span></span></div>
+</li>
+</ol>
+<p>We have described arrays as a <a href="https://math.stackexchange.com/a/361530">family</a>, and the primed elements belong to the permuted array.</p>
+<p>Since a sorting function has an infinite domain, it is not possible to verify these properties without resorting to <strong>sampling</strong>. Here is one strategy to programmatically generate array samples:</p>
+<ul>
+<li>Progressively create arrays of increasing size (up to a maximum)</li>
+<li>Large arrays encode exponentially more states, so generate more of these</li>
+</ul>
+<p>Our sort function can act on generic arrays, but to generate samples, we need to specialise on a type. We choose <code>Int</code>; however, there is no reason another type that has a total-ordering defined cannot be used instead -- such as <code>Char</code> or <code>Double</code>.</p>
+<pre><code class="hljs language-scala"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">arrays</span></span>: <span class="hljs-type">Stream</span>[<span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>]] = {
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sample</span></span>(size: <span class="hljs-type">Int</span>): <span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>] =
+    <span class="hljs-type">Array</span>.fill(size)(rnd.nextInt())
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">samples</span></span>(size: <span class="hljs-type">Int</span>): <span class="hljs-type">Stream</span>[<span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>]] =
+    <span class="hljs-type">Stream</span>.fill(math.pow(<span class="hljs-number">2</span>, size).toInt)(sample(size))  <span class="hljs-comment">// sample 2^size times</span>
+
+  <span class="hljs-type">Stream</span>.range(<span class="hljs-number">0</span>, maxSize).flatMap(samples)
+}  <span class="hljs-comment">// `maxSize` and `rnd` come from the test class</span>
+</code></pre>
+<p>Language and machine constraints limit integer arrays of size <code>n</code> to <code>math.pow(2*Int.MaxValue, n)</code> permutations. We only take <code>math.pow(2, n)</code> samples to keep the time it takes to run tests manageable.</p>
+<p>Note that, although it is not evident from the caller's perspective, the second argument of <code>Stream.fill</code> is evaluated <a href="https://docs.scala-lang.org/tour/by-name-parameters.html">lazily</a>, so every sample will be distinct.</p>
+<p>Using <a href="http://www.scalatest.org">ScalaTest</a> as the test runner, the test-code ends up being quite lean:</p>
+<pre><code class="hljs language-scala"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SortingTest</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">FlatSpec</span> </span>{
+  <span class="hljs-keyword">val</span> rnd = <span class="hljs-keyword">new</span> <span class="hljs-type">Random</span>()
+  <span class="hljs-keyword">val</span> maxSize = <span class="hljs-number">20</span>
+
+  <span class="hljs-comment">// Context manager to give tests access to sample arrays</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test</span></span>(testCode: <span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>] => <span class="hljs-type">Boolean</span>): <span class="hljs-type">Unit</span> = {
+    <span class="hljs-keyword">val</span> maybeFailed = arrays.find(a => !testCode(a))
+    maybeFailed.foreach(a =>
+      fail(a.mkString(<span class="hljs-string">"["</span>, <span class="hljs-string">", "</span>, <span class="hljs-string">"]"</span>))
+    )
+  }
+
+  <span class="hljs-string">"mergeSort"</span> should <span class="hljs-string">"produce a sorted array"</span> in test { a =>
+    mergeSort(a)
+    isSorted(a)
+  }
+
+  it should <span class="hljs-string">"rearrange keys"</span> in test { a =>
+    <span class="hljs-keyword">val</span> before = <span class="hljs-keyword">new</span> <span class="hljs-type">Histogram</span>(a)
+    mergeSort(a)
+    <span class="hljs-keyword">val</span> after = <span class="hljs-keyword">new</span> <span class="hljs-type">Histogram</span>(a)
+    before == after
+  }
+}
+</code></pre>
+<p>When verifying property two, we relied on a histogram abstraction to count array elements:</p>
+<pre><code class="hljs language-scala"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Histogram</span>[<span class="hljs-type">K</span>](<span class="hljs-params">keys: <span class="hljs-type">Seq</span>[<span class="hljs-type">K</span>]</span>) </span>{
+  <span class="hljs-keyword">private</span> <span class="hljs-keyword">val</span> underlying =
+    keys.foldLeft(<span class="hljs-type">Map</span>.empty[<span class="hljs-type">K</span>, <span class="hljs-type">Int</span>]) { (m, k) =>
+      <span class="hljs-keyword">val</span> count = m.getOrElse(k, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>
+      m + (k -> count)
+    }
+
+  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">equals</span></span>(that: <span class="hljs-type">Any</span>): <span class="hljs-type">Boolean</span> =
+    that <span class="hljs-keyword">match</span> {
+      <span class="hljs-keyword">case</span> h: <span class="hljs-type">Histogram</span>[<span class="hljs-type">K</span>] =>
+        h.underlying.equals(underlying)
+      <span class="hljs-keyword">case</span> _ => <span class="hljs-literal">false</span>
+    }
+
+  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hashCode</span></span>: <span class="hljs-type">Int</span> = underlying.hashCode
+}
+</code></pre>
+<p>The strategy in use to generate samples does not adequately cover the situation where arrays to sort are saturated with duplicate keys. Additionally, the tests fail to verify that our implementation of mergesort is stable. We can address both shortcomings with extra code, but it is easier to use ScalaCheck.</p>
+<h2>Testing with ScalaCheck</h2>
+<p><a href="https://www.scalacheck.org">ScalaCheck</a> is a library designed to aid property-based testing. It is inspired by Haskell's QuickCheck.</p>
+<p>To use ScalaCheck, we need to be aware of two abstract data types it exports:</p>
+<ul>
+<li><code>Gen[T]</code> is a <a href="https://en.wikipedia.org/wiki/Monad">monad</a> that encodes all the information necessary to produce samples of type <code>T</code></li>
+<li><code>Prop</code> verifies a property by sampling a generator that is passed to it</li>
+</ul>
+<p>Here is the (naïve) strategy for sample generation, re-written using ScalaCheck:</p>
+<pre><code class="hljs language-scala"><span class="hljs-keyword">val</span> unsaturated: <span class="hljs-type">Gen</span>[<span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>]] =
+  <span class="hljs-type">Gen</span>.containerOf[<span class="hljs-type">Array</span>, <span class="hljs-type">Int</span>](<span class="hljs-type">Gen</span>.posNum)
+</code></pre>
+<p>ScalaCheck will choose the maximum sample size to generate when running the test.</p>
+<p>To test cases where duplicate keys are common, we modify the generator that creates keys to limit itself to choose from the range <code>[0, sqrt(size))</code>, where <code>size</code> is the length of the array being filled.</p>
+<pre><code class="hljs language-scala"><span class="hljs-keyword">val</span> saturated: <span class="hljs-type">Gen</span>[<span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>]] = {
+  <span class="hljs-comment">// One possible way of saturating the array with duplicate keys</span>
+  <span class="hljs-keyword">val</span> sized = <span class="hljs-type">Gen</span>.sized(s => <span class="hljs-type">Gen</span>.choose(<span class="hljs-number">0</span>, <span class="hljs-type">Math</span>.sqrt(s).toInt))
+  <span class="hljs-type">Gen</span>.containerOf[<span class="hljs-type">Array</span>, <span class="hljs-type">Int</span>](sized)
+}
+</code></pre>
+<p>A stable sorting algorithm is one that ensures that any two keys which compare equally maintain their relative positions in the array. To test <code>mergeSort</code> is stable we create arrays loaded with tuples, sorting them by the second element in the tuple <em>and then</em> the first. We should find that the mutated array is sorted with respect to a compound order which orders the tuples by comparing first elements and, if necessary, breaks ties on the second element. (Actually, this is the default ordering for tuples in Scala.)</p>
+<p>Here is the resulting test code, without the generators listed above:</p>
+<pre><code class="hljs language-scala"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">SortingSpec</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Properties</span>(<span class="hljs-params">"mergeSort"</span>) </span>{
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Pair</span> </span>= (<span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>)  <span class="hljs-comment">// a type alias</span>
+
+  <span class="hljs-keyword">val</span> pairs: <span class="hljs-type">Gen</span>[<span class="hljs-type">Array</span>[<span class="hljs-type">Pair</span>]] = {
+    <span class="hljs-keyword">val</span> n = <span class="hljs-type">Gen</span>.choose(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>)
+    <span class="hljs-keyword">val</span> pair = <span class="hljs-keyword">for</span> {
+      i &#x3C;- n
+      j &#x3C;- n
+    } <span class="hljs-keyword">yield</span> (i, j)  <span class="hljs-comment">// syntax sugar</span>
+    <span class="hljs-type">Gen</span>.containerOf[<span class="hljs-type">Array</span>, <span class="hljs-type">Pair</span>](pair)
+  }
+
+  property(<span class="hljs-string">"isSorted"</span>) = <span class="hljs-type">Prop</span>.forAll(unsaturated) { a =>
+    mergeSort(a)
+    isSorted(a)
+  }
+
+  property(<span class="hljs-string">"keys"</span>) = <span class="hljs-type">Prop</span>.forAll(unsaturated) { a =>
+    <span class="hljs-keyword">val</span> before = <span class="hljs-keyword">new</span> <span class="hljs-type">Histogram</span>(a)
+    mergeSort(a)
+    <span class="hljs-keyword">val</span> after = <span class="hljs-keyword">new</span> <span class="hljs-type">Histogram</span>(a)
+    before == after
+  }
+
+  property(<span class="hljs-string">"isStable"</span>) = <span class="hljs-type">Prop</span>.forAll(pairs) { a =>
+    <span class="hljs-keyword">val</span> byI = <span class="hljs-type">Ordering</span>.by[<span class="hljs-type">Pair</span>, <span class="hljs-type">Int</span>](_._1)
+    <span class="hljs-keyword">val</span> byJ = <span class="hljs-type">Ordering</span>.by[<span class="hljs-type">Pair</span>, <span class="hljs-type">Int</span>](_._2)
+
+    mergeSort(a)(classTag[<span class="hljs-type">Pair</span>], byJ)
+    mergeSort(a)(classTag[<span class="hljs-type">Pair</span>], byI)
+    isSorted(a)
+  }
+}
+</code></pre>
+<p>By using ScalaCheck, we have traded some transparency for the ability to abstract away the details of test case generation. Also, ScalaCheck can perform <a href="https://github.com/rickynils/scalacheck/blob/master/doc/UserGuide.md#test-case-minimisation">test case minimisation</a>, which is useful when debugging.</p>
+<h2>Further reading</h2>
+<p>Mergesort was chosen to demonstrate property-based testing because it is the only performant sorting algorithm that is also stable. System sorts typically use a variant of mergesort for sorting reference types, and quicksort for primitives. Sedgewick and Wayne discuss this in more detail.</p>
+<p>If you want more insight into how ScalaCheck works, it would be worth reading the book <a href="https://www.manning.com/books/functional-programming-in-scala">Functional Programming in Scala</a>. The eight-chapter walks the reader through designing such a library.</p></div></div><div class="pagination"><span class="pagination-item"><a href="/posts/hello-world.html">Previous</a></span><span class="pagination-item"><a href="/posts/monte-carlo-to-las-vegas.html">Next</a></span></div></div></div></body></html>

@@ -1,12 +1,10 @@
 import * as React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import { MemoryRouter } from "react-router-dom";
 
-import { Posts } from "shared/components";
-import { Context } from "shared/containers";
+import { PostList } from "src/components";
 
-let container: HTMLDivElement = null;
+let container: HTMLDivElement;
 
 beforeEach(() => {
   container = document.createElement("div");
@@ -16,43 +14,35 @@ beforeEach(() => {
 afterEach(() => {
   unmountComponentAtNode(container);
   container.remove();
-  container = null;
 });
 
-describe("<Posts />", () => {
-  const summary = "Lorem ipsum";
-  const wordCount = 5;
+const posts = [
+  {
+    title: "My second post",
+    summary: "Lorem ipsum delorum sit amet",
+    body: "Lorem ipsum delorum sit amet",
+    slug: "my-second-post",
+    created: new Date("2018-10-15"),
+    tags: ["Java"],
+    wordCount: 2,
+  },
+  {
+    title: "My first post",
+    summary: "Lorem ipsum delorum sit amet",
+    body: "Lorem ipsum delorum sit amet",
+    slug: "my-first-post",
+    created: new Date("2018-07-22"),
+    tags: ["Algorithms", "Java"],
+    wordCount: 1,
+  },
+];
 
-  const posts = [
-    {
-      title: "My first post",
-      slug: "my-first-post",
-      summary,
-      created: 1523401200000,
-      tags: ["Algorithms", "Java"],
-      wordCount,
-    },
-    {
-      title: "My second post",
-      slug: "my-second-post",
-      summary,
-      created: 1523487600000,
-      tags: ["Java"],
-      wordCount,
-    },
-  ];
-
-  it("renders posts", () => {
+describe("<PostList />", () => {
+  it("renders all posts", () => {
     act(() => {
-      render(
-        <MemoryRouter>
-          <Context.Posts.Provider value={posts}>
-            <Posts />
-          </Context.Posts.Provider>
-        </MemoryRouter>,
-        container
-      );
+      render(<PostList posts={posts} />, container);
     });
+    expect(container.querySelectorAll(".posts")).toHaveLength(1);
     expect(container.querySelectorAll(".post")).toHaveLength(posts.length);
   });
 });
