@@ -126,7 +126,7 @@ Markup is versioned as source code. In this sense, the publishing mechanism is s
 
 A custom Webpack loader processes the posts. Within markup, code and LaTeX snippets can be entered inline or in delimited blocks, like so:
 
-````markdown
+````
 # Complex numbers
 
 Python supports complex numbers natively. For example, $1 + 2*j$ is written as
