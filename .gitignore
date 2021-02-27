@@ -2,8 +2,9 @@
 node_modules
 
 // Built files
-dist
 coverage
+dist
+site
 
 // Platform specific
 .DS_Store
