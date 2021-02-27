@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Sidebar from "./Sidebar";
 
 const Head: React.FC = () => (
@@ -26,7 +26,11 @@ const Head: React.FC = () => (
   </head>
 );
 
-const Body: React.FC = ({ children }) => (
+type Props = {
+  children: JSX.Element
+}
+
+const Body: React.FC<Props> = ({ children }: Props) => (
   <body>
     <div id="root">
       <Sidebar />
@@ -35,7 +39,7 @@ const Body: React.FC = ({ children }) => (
   </body>
 );
 
-const Page: React.FC = ({ children }) => (
+const Page: React.FC<Props> = ({ children }: Props) => (
   <>
     <Head />
     <Body>{children}</Body>
