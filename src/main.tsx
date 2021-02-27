@@ -28,11 +28,9 @@ try {
       };
     });
   repo = new Repo(posts);
-} catch (e: unknown) {
-  if (e instanceof Error) {
-    console.error(`Could not parse markup: ${e.message}`);
-    process.exit(1);
-  }
+} catch (_) {
+  console.error("Could not parse markup");
+  process.exit(1);
 }
 
 // site/
@@ -84,11 +82,9 @@ repo.tags.forEach((tag) =>
 function copy(source: string, target: string): void {
   try {
     execSync(`cp -R ${source} ${target}`, { stdio: "ignore" });
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Could not move ${source} to ${target}: ${e.message}`);
-      process.exit(1);
-    }
+  } catch (_) {
+    console.error(`Could not move ${source} to ${target}`);
+    process.exit(1);
   }
 }
 
