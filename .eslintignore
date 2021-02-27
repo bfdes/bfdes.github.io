@@ -4,10 +4,9 @@ node_modules
 // Built files
 coverage
 dist
+site
 
 // Config
 .eslintrc.js
-webpack
 webpack.config.js
-jest
 jest.config.js
