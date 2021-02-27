@@ -27,8 +27,8 @@ const Head: React.FC = () => (
 );
 
 type Props = {
-  children: JSX.Element
-}
+  children: JSX.Element;
+};
 
 const Body: React.FC<Props> = ({ children }: Props) => (
   <body>
