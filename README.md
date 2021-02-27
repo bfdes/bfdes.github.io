@@ -3,28 +3,53 @@
 ![GitHub Actions](https://github.com/bfdes/bfdes.in/workflows/Test/badge.svg)
 [![Codecov](https://codecov.io/gh/bfdes/bfdes.in/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.in)
 
-Source for my personal blog, built using React SSR and written in TypeScript.
+Source for my personal blog as well as the simple static site generator used to build it. 
 
-The Blog is edited by supplying Markdown documents with YAML frontmatter in a posts directory beneath the root.
-
-When the server-side code is built, the posts are bundled using a custom Webpack loader.
-
-## Requirements
-
-- Node 14.x
-- Yarn 1.x
+In this repo,
+- `src` contains source code for the static site generator, and 
+- `posts`, `images`, `styles` contain the markup and assets for the website.
 
 ## Usage
 
-### Installation
+### Requirements
 
-Run `yarn install` within the root directory.
+- Node 14.x
+- Yarn 1.x (to build the static site generator)
 
-### Local development
+Run the following commands within the repository root:
 
-Run `yarn build:dev`. Uses Webpack in watch mode to compile the TS source for both the frontend and the backend.
+```bash
+`yarn install`
+# Installs all dependencies
 
-Write posts in a 'posts' folder under the root directory. The format is
+`yarn compile:prod`
+# Builds the static site generator, and puts it in dist/ssg.js
+
+`yarn build:prod`
+# Builds the website itself, and puts it in the site/
+```
+
+Example output:
+
+```
+site
+├── 404.html
+├── about.html
+├── feed.rss
+├── images
+│   └── favicon.png
+├── index.html
+├── posts
+│   └── hello-world.html
+├── styles
+│   └── main.css
+└── tags
+    └── python.html    
+```
+
+### Editing posts
+
+Enter Markdown articles in the posts directory with the following structure:
 
 ```
 ---
@@ -36,23 +61,59 @@ summary: <RSS SUMMARY>
 <BODY IN MARKDOWN>
 ```
 
-and the name of the markdown file should correspond to the slug of its post.
+The name of the markdown file should correspond to the slug of its post.
 
-Then (also) run `yarn serve:dev` to serve the app on port 8080 using Nodemon.
+For example, `hello-world.md` will be transformed into `site/posts/hello-world.html`.
+
+### Supported syntax
+
+KaTeX and highlight.js rendering plugins from the unified.js ecosystem enable rendering of math, code:
+
+- Wrap inline math in `$`, and block math in `$$`
+- Wrap inline code in ` ``` `, and add newlines for block code
+
+For example, the snippet
+
+````
+# Complex numbers
+
+Python supports complex numbers natively. For example, $1 + 2*j$ is written as
+
+```python
+1 + 2j
+```
+````
+
+illustrates the use of inline math, delimited by `$`, and fenced code blocks, delimited by ` ``` `.
+
+### Editing styles and assets
+
+Styles and assets are simply copied over by the static site generator:
+ - `styles/main.css` modifies the appearence of the generated website, and
+ - images are fetched relative to the `images` folder. 
+
+## Local development
+
+Run `yarn compile:dev` and `yarn build:dev` in separate terminal windows to
+- build the site quickly for rapid developer iteration, and
+- rebuild the site in response to changes in source code and markup.
+
+You can use the built-in webservers that come with various interpreted languages to view the website. 
+
+Using [Ruby's WEBRick](https://github.com/ruby/webrick), for example:
+
+```bash
+ruby -run -ehttpd site  # serves the contents of site on localhost, port 8080
+```
 
 ### Testing
 
-Run `yarn test` to run the tests using Jest.
+Run the following commands to lint, format and test code, respectively:
 
-Run `yarn:lint` and `yarn:format` to lint and format code, respectively.
+```bash
+yarn lint
+yarn format
+yarn test
+```
 
-GitHub Actions will also run this test suite for every PR.
-
-## Deployment
-
-Running `yarn build:prod` generates two bundles
-
-- Client code under the /static folder
-- A single file of server-side code
-
-Run the server-side code using Node.js, and optionally configure a webserver to serve assets under /static.
+GitHub Actions will also run these commands for every code push.

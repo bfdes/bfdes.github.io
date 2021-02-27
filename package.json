@@ -8,8 +8,8 @@
   "scripts": {
     "compile:dev": "webpack --watch --mode=development",
     "compile:prod": "webpack --mode=production",
-    "build:dev": "nodemon dist/main.js",
-    "build:prod": "node dist/main.js",
+    "build:dev": "nodemon dist/ssg.js",
+    "build:prod": "node dist/ssg.js",
     "lint": "eslint \"**/*.{tsx,ts,jsx,js}\"",
     "format": "prettier --write \"**/*.{tsx,ts,jsx,js,css,html,json,yml,md}\"",
     "test": "jest"

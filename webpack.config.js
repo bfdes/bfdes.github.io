@@ -12,7 +12,7 @@ module.exports = {
     ],
   },
   output: {
-    filename: "main.js",
+    filename: "ssg.js",
     path: path.resolve(__dirname, "./dist"),
   },
   resolve: {
