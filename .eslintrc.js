@@ -6,7 +6,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "prettier/@typescript-eslint",
+    "prettier",
   ],
   rules: {
     "@typescript-eslint/no-unused-vars": [
