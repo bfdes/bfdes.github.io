@@ -26,7 +26,7 @@ yarn compile:prod
 # Builds the static site generator, and puts it in dist/ssg.js
 
 yarn build:prod
-# Builds the website itself, and puts it in the site/
+# Builds the website itself, and puts it in site/
 ```
 
 Example output:
