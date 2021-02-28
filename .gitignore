@@ -1,7 +1,9 @@
-// Built files and vendor
+// Dependencies
 node_modules
-dist
+
+// Built files
 coverage
+dist
 
 // Platform specific
 .DS_Store
