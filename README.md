@@ -11,8 +11,8 @@ When the server-side code is built, the posts are bundled using a custom Webpack
 
 ## Requirements
 
-- Node 14.x
-- Yarn 1.x
+- [Node.js](https://nodejs.org/en/) 14.x
+- [Yarn](https://classic.yarnpkg.com) 1.x
 
 ## Usage
 
@@ -42,11 +42,15 @@ Then (also) run `yarn serve:dev` to serve the app on port 8080 using Nodemon.
 
 ### Testing
 
-Run `yarn test` to run the tests using Jest.
+Run the following commands to lint, format and test code, respectively:
 
-Run `yarn:lint` and `yarn:format` to lint and format code, respectively.
+```plaintext
+ yarn lint
+ yarn format
+ yarn test
+```
 
-GitHub Actions will also run this test suite for every PR.
+GitHub Actions will also run tests for every code push.
 
 ## Deployment
 
