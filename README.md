@@ -19,13 +19,13 @@ In this repo,
 Run the following commands within the repository root:
 
 ```bash
-`yarn install`
+yarn install
 # Installs all dependencies
 
-`yarn compile:prod`
+yarn compile:prod
 # Builds the static site generator, and puts it in dist/ssg.js
 
-`yarn build:prod`
+yarn build:prod
 # Builds the website itself, and puts it in the site/
 ```
 
@@ -70,7 +70,7 @@ For example, `hello-world.md` will be transformed into `site/posts/hello-world.h
 KaTeX and highlight.js rendering plugins from the unified.js ecosystem enable rendering of math, code:
 
 - Wrap inline math in `$`, and block math in `$$`
-- Wrap inline code in ` ``` `, and add newlines for block code
+- Wrap code in ` ``` ` (add newlines for block code)
 
 For example, the snippet
 
@@ -98,7 +98,7 @@ Run `yarn compile:dev` and `yarn build:dev` in separate terminal windows to
 - build the site quickly for rapid developer iteration, and
 - rebuild the site in response to changes in source code and markup.
 
-You can use the built-in webservers that come with various interpreted languages to view the website. 
+You can use any of the built-in webservers that come with various interpreted languages to view the website. 
 
 Using [Ruby's WEBRick](https://github.com/ruby/webrick), for example:
 
@@ -110,7 +110,7 @@ ruby -run -ehttpd site  # serves the contents of site on localhost, port 8080
 
 Run the following commands to lint, format and test code, respectively:
 
-```bash
+```plaintext
 yarn lint
 yarn format
 yarn test
