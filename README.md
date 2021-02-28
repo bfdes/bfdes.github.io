@@ -3,10 +3,11 @@
 ![GitHub Actions](https://github.com/bfdes/bfdes.in/workflows/Test/badge.svg)
 [![Codecov](https://codecov.io/gh/bfdes/bfdes.in/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.in)
 
-Source for my personal blog as well as the simple static site generator used to build it. 
+Source for my personal blog as well as the simple static site generator used to build it.
 
 In this repo,
-- `src` contains source code for the static site generator, and 
+
+- `src` contains source code for the static site generator, and
 - `posts`, `images`, `styles` contain the markup and assets for the website.
 
 ## Usage
@@ -44,7 +45,7 @@ site
 ├── styles
 │   └── main.css
 └── tags
-    └── python.html    
+    └── python.html
 ```
 
 ### Editing posts
@@ -89,16 +90,18 @@ illustrates the use of inline math, delimited by `$`, and fenced code blocks, de
 ### Editing styles and assets
 
 Styles and assets are simply copied over by the static site generator:
- - `styles/main.css` modifies the appearence of the generated website, and
- - images are fetched relative to the `images` folder. 
+
+- `styles/main.css` modifies the appearence of the generated website, and
+- images are fetched relative to the `images` folder.
 
 ## Local development
 
 Run `yarn compile:dev` and `yarn build:dev` in separate terminal windows to
+
 - build the site quickly for rapid developer iteration, and
 - rebuild the site in response to changes in source code and markup.
 
-You can use any of the built-in webservers that come with various interpreted languages to view the website. 
+You can use any of the built-in webservers that come with various interpreted languages to view the website.
 
 Using [Ruby's WEBRick](https://github.com/ruby/webrick), for example:
 
@@ -116,4 +119,4 @@ yarn format
 yarn test
 ```
 
-GitHub Actions will also run these commands for every code push.
+GitHub Actions will also run tests for every code push.
