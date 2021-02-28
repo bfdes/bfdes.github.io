@@ -2,11 +2,11 @@ import unified from "unified";
 import remarkParse from "remark-parse";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
-const rehypeHighlight = require("rehype-highlight");
+import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 import vfile, { VFile } from "vfile";
-const matter = require("vfile-matter");
+import matter from "vfile-matter";
 import { Content } from "mdast";
 
 // Markdown AST -> word count compiler
