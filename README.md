@@ -13,8 +13,8 @@ In this repo,
 
 ### Requirements
 
-- Node 14.x
-- Yarn 1.x (to build the static site generator)
+- [Node.js](https://nodejs.org/en/) 14.x
+- [Yarn](https://classic.yarnpkg.com) 1.x (to build the static site generator)
 
 Run the following commands within the repository root:
 
@@ -67,7 +67,7 @@ For example, `hello-world.md` will be transformed into `site/posts/hello-world.h
 
 ### Supported syntax
 
-KaTeX and highlight.js rendering plugins from the unified.js ecosystem enable rendering of math, code:
+[KaTeX](https://katex.org) and [highlight.js](https://highlightjs.org) rendering plugins from the [unified.js](https://unifiedjs.com) ecosystem enable rendering of math, code:
 
 - Wrap inline math in `$`, and block math in `$$`
 - Wrap code in ` ``` ` (add newlines for block code)
