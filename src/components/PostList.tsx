@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import TagList from "./TagList";
 import Date from "./Date";
 import WordCount from "./WordCount";

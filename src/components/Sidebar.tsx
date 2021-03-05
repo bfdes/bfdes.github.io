@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 const Profile: React.FC = () => (
   <img className="avatar" src="/images/avatar.jpg" alt="Profile photo" />

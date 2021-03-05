@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Date from "./Date";
 import PaginationLink from "./PaginationLink";
 import TagList from "./TagList";
