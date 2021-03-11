@@ -5,50 +5,30 @@ import remarkRehype from "remark-rehype";
 import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
-import vfile, { VFile } from "vfile";
+import vfile from "vfile";
 import matter from "vfile-matter";
-import { Content } from "mdast";
+import slugify from "./slugify";
 
 // Markdown AST -> word count compiler
 function retextCount() {
   this.Compiler = countWords;
 
-  function countWords(tree: Content): number {
+  function countWords(tree) {
     if (tree.type == "text") {
       return tree.value.trim().split(/\s+/).length;
     }
-    if (Array.isArray(tree.children)) {
-      return tree.children
-        .map(countWords)
-        .reduce((sum, count) => sum + count, 0);
-    }
-    return 0;
+    return (tree.children || [])
+      .map(countWords)
+      .reduce((sum, count) => sum + count, 0);
   }
 }
 
-interface Meta {
-  title: string;
-  summary: string;
-  tags: string[];
-  created: Date;
-}
-
-interface Post extends Meta {
-  wordCount: number;
-  body: string;
-}
-
-interface VFileWithMeta extends VFile {
-  data: {
-    matter?: Meta;
-  };
-}
-
-export default function parse(contents: Buffer): Post {
-  let file = vfile({ contents }) as VFileWithMeta;
+export default function parse(contents) {
+  let file = vfile({ contents });
   matter(file, { strip: true });
   // Extract metadata
   const { title, summary, tags, created } = file.data.matter;
+  const slug = slugify(title);
 
   // Extract rendered post content
   const body = unified()
@@ -62,16 +42,17 @@ export default function parse(contents: Buffer): Post {
     .toString();
 
   // Calculate word count
-  file = vfile({ contents }); // n.b. render process mutates the file
+  file = vfile({ contents });
   matter(file, { strip: true });
   const wordCount = unified()
     .use(remarkParse)
     .use(remarkMath)
     .use(retextCount)
-    .processSync(file).result as number;
+    .processSync(file).result;
 
   return {
     title,
+    slug,
     summary,
     tags,
     wordCount,

@@ -1,8 +1,4 @@
-import React from "react";
-
-type Props = {
-  value: Date;
-};
+import Template from "../template";
 
 const monthNames = [
   "January",
@@ -19,7 +15,7 @@ const monthNames = [
   "December",
 ];
 
-const Date: React.FC<Props> = ({ value }: Props) => {
+const Date = ({ value }) => {
   const day = value.getDate();
   const month = monthNames[value.getMonth()];
   const year = value.getFullYear();

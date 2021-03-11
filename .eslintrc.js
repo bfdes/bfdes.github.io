@@ -1,12 +1,12 @@
 module.exports = {
-  parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
-  extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint",
-  ],
+  parser: "@babel/eslint-parser",
+  extends: ["eslint:recommended", "plugin:react/recommended", "prettier"],
+  env: {
+    node: true,
+    jest: true,
+    browser: true,
+    es6: true,
+  },
   settings: {
     react: {
       version: "detect",

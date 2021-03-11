@@ -1,9 +1,9 @@
-import * as React from "react";
+import Template from "src/template";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 import { TagList } from "src/components";
 
-let container: HTMLDivElement;
+let container;
 
 beforeEach(() => {
   container = document.createElement("div");

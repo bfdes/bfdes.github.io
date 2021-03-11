@@ -10,3 +10,4 @@ site
 .eslintrc.js
 webpack.config.js
 jest.config.js
+babel.config.js

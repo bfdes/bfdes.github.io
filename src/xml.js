@@ -1,37 +1,23 @@
-type NonEmptyArray<T> = [T, ...T[]];
-
-export class Attributes extends Map<string, string> {
-  toString(): string {
+export class Attributes extends Map {
+  toString() {
     return Array.from(this.entries())
       .map(([key, value]) => `${key}="${value}" `)
       .join("")
       .trim();
   }
 
-  static empty(): Attributes {
+  static empty() {
     return new Attributes();
   }
 }
 
-export interface Tree {
-  readonly name: string;
-  readonly attributes: Attributes;
-}
-
-export class Leaf implements Tree {
-  name: string;
-  attributes: Attributes;
-  content: string;
-  constructor(
-    name: string,
-    content: string,
-    attributes: Attributes = Attributes.empty()
-  ) {
+export class Leaf {
+  constructor(name, content, attributes = Attributes.empty()) {
     this.name = name;
     this.content = content;
     this.attributes = attributes;
   }
-  toString(): string {
+  toString() {
     const { name, content, attributes } = this;
     if (content && attributes.size) {
       return `<${name} ${attributes}>${content}</${name}>`;
@@ -46,20 +32,13 @@ export class Leaf implements Tree {
   }
 }
 
-export class Branch implements Tree {
-  name: string;
-  attributes: Attributes;
-  children: NonEmptyArray<Tree>;
-  constructor(
-    name: string,
-    children: NonEmptyArray<Tree>,
-    attributes: Attributes = Attributes.empty()
-  ) {
+export class Branch {
+  constructor(name, children, attributes = Attributes.empty()) {
     this.name = name;
     this.children = children;
     this.attributes = attributes;
   }
-  toString(): string {
+  toString() {
     const { name, attributes, children } = this;
     const content = children.join("");
     const openingTag = attributes.size
@@ -70,11 +49,7 @@ export class Branch implements Tree {
   }
 }
 
-export function node(
-  name: string,
-  content: string | NonEmptyArray<Tree> = "",
-  attributes: Attributes = Attributes.empty()
-): Tree {
+export function node(name, content, attributes = Attributes.empty()) {
   if (Array.isArray(content)) {
     return new Branch(name, content, attributes);
   }

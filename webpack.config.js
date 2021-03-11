@@ -2,7 +2,7 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
-  entry: path.resolve(__dirname, "src", "main.tsx"),
+  entry: path.resolve(__dirname, "src", "main.jsx"),
   optimization: {
     minimize: true,
     minimizer: [
@@ -13,17 +13,18 @@ module.exports = {
   },
   output: {
     filename: "ssg.js",
-    path: path.resolve(__dirname, "./dist"),
+    path: path.resolve(__dirname, "dist"),
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: [".js", ".jsx"],
     modules: [path.resolve(__dirname, "src"), "node_modules"],
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: "ts-loader",
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: "babel-loader",
       },
     ],
   },

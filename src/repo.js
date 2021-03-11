@@ -1,33 +1,14 @@
-type Slug = string;
-
-type Post = {
-  title: string;
-  slug: Slug;
-  summary: string;
-  body: string;
-  wordCount: number;
-  tags: string[];
-  created: Date;
-  previous?: Slug;
-  next?: Slug;
-};
-
 export default class Repo {
-  readonly posts: Post[];
-  readonly tags: Set<string>;
-
-  constructor(posts: Post[]) {
-    this.posts = posts.sort(
-      (p, q) => q.created.getTime() - p.created.getTime()
-    );
+  constructor(posts) {
+    this.posts = posts.sort((p, q) => q.created - p.created);
     this.tags = new Set(posts.flatMap((p) => p.tags));
   }
 
-  filter(tag: string): Post[] {
+  filter(tag) {
     return this.posts.filter((p) => p.tags.includes(tag));
   }
 
-  get(slug: string): Post {
+  get(slug) {
     const i = this.posts.findIndex((p) => p.slug == slug);
     if (i === -1) {
       return null; // Not found

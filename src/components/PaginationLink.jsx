@@ -1,13 +1,6 @@
-import React from "react";
+import Template from "../template";
 
-type Message = string;
-
-type Props = {
-  next?: string;
-  children: Message;
-};
-
-const PaginationLink: React.FC<Props> = ({ next, children }: Props) => (
+const PaginationLink = ({ next, children }) => (
   <span className="pagination-item">
     {next ? (
       <a href={`/posts/${next}.html`}>{children}</a>

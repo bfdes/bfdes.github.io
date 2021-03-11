@@ -1,27 +1,14 @@
-import React from "react";
+import Template from "../template";
 import Date from "./Date";
 import PaginationLink from "./PaginationLink";
 import TagList from "./TagList";
 import WordCount from "./WordCount";
+import Page from "./Page";
 
-type Post = {
-  title: string;
-  body: string;
-  wordCount: number;
-  tags: string[];
-  created: Date;
-  previous?: string;
-  next?: string;
-};
-
-type Props = {
-  value: Post;
-};
-
-const Post: React.FC<Props> = ({ value }: Props) => {
+const Post = ({ value }) => {
   const { title, body, created, tags, wordCount, previous, next } = value;
   return (
-    <>
+    <Page>
       <div className="post">
         <h1>{title}</h1>
         <p className="meta">
@@ -37,7 +24,7 @@ const Post: React.FC<Props> = ({ value }: Props) => {
         <PaginationLink next={previous}>Previous</PaginationLink>
         <PaginationLink next={next}>Next</PaginationLink>
       </div>
-    </>
+    </Page>
   );
 };
 

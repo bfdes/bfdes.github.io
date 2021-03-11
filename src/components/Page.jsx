@@ -1,7 +1,7 @@
-import React from "react";
+import Template from "../template";
 import Sidebar from "./Sidebar";
 
-const Head: React.FC = () => (
+const Head = () => (
   <head>
     <meta charSet="utf8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,11 +26,7 @@ const Head: React.FC = () => (
   </head>
 );
 
-type Props = {
-  children: JSX.Element;
-};
-
-const Body: React.FC<Props> = ({ children }: Props) => (
+const Body = ({ children }) => (
   <body>
     <div id="root">
       <Sidebar />
@@ -39,11 +35,11 @@ const Body: React.FC<Props> = ({ children }: Props) => (
   </body>
 );
 
-const Page: React.FC<Props> = ({ children }: Props) => (
-  <>
+const Page = ({ children }) => (
+  <html lang="en">
     <Head />
     <Body>{children}</Body>
-  </>
+  </html>
 );
 
 export default Page;

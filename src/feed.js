@@ -1,15 +1,7 @@
 import { node, Attributes, Branch } from "xml";
 
-type Meta = {
-  title: string;
-  slug: string;
-  summary: string;
-  tags: string[];
-  created: Date;
-};
-
 export default class Feed extends Branch {
-  constructor(metaData: Meta[]) {
+  constructor(metaData) {
     const title = node("title", "bfdes.in");
     const link = node("link", "https://www.bfdes.in");
     const description = node("description", "Programming and Technology blog");
@@ -28,7 +20,7 @@ export default class Feed extends Branch {
     super("rss", [channel], new Attributes([["version", "1.0"]]));
   }
 
-  public toString(): string {
+  toString() {
     const prolog = `<?xml version="1.0" encoding="utf-8"?>`;
     return `${prolog}${super.toString()}`;
   }

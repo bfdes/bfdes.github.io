@@ -8,3 +8,5 @@ export { default as PostList } from "./PostList";
 export { default as Sidebar } from "./Sidebar";
 export { default as TagList } from "./TagList";
 export { default as WordCount } from "./WordCount";
+export { default as File } from "./File";
+export { default as Dir } from "./Dir";

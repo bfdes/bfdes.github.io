@@ -1,10 +1,10 @@
-import React from "react";
+import Template from "../template";
 
-const Profile: React.FC = () => (
+const Profile = () => (
   <img className="avatar" src="/images/avatar.jpg" alt="Profile photo" />
 );
 
-const NavBar: React.FC = () => (
+const NavBar = () => (
   <div id="nav">
     <a className="nav-item" href="/posts">
       <h2>Blog</h2>
@@ -15,7 +15,7 @@ const NavBar: React.FC = () => (
   </div>
 );
 
-const Social: React.FC = () => (
+const Social = () => (
   <div id="social">
     <a className="nav-item" href="https://www.github.com/bfdes">
       <img className="badge" src="/images/github.png" alt="GitHub link" />
@@ -26,7 +26,7 @@ const Social: React.FC = () => (
   </div>
 );
 
-const Sidebar: React.FC = () => (
+const Sidebar = () => (
   <aside id="sidebar">
     <Profile />
     <NavBar />
