@@ -1,4 +1,4 @@
-import Template from "../template"
+import Template from "../template";
 import Date from "./Date";
 import PaginationLink from "./PaginationLink";
 import TagList from "./TagList";

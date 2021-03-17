@@ -1,4 +1,4 @@
-import Template from "../template"
+import Template from "../template";
 import Sidebar from "./Sidebar";
 
 const Head = () => (

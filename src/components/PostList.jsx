@@ -1,4 +1,4 @@
-import Template from "../template"
+import Template from "../template";
 import TagList from "./TagList";
 import Date from "./Date";
 import WordCount from "./WordCount";

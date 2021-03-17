@@ -12,17 +12,17 @@ export class File {
     try {
       fs.writeFileSync(filePath, this.contents);
     } catch (_) {
-      console.error(`Could not write to ${filePath}`)
+      console.error(`Could not write to ${filePath}`);
     }
   }
 
   static read(filePath) {
     try {
-      const contents = fs.readFileSync(filePath).toString()
-      const name = path.parse(filePath).base
-      return new File(name, contents)
+      const contents = fs.readFileSync(filePath).toString();
+      const name = path.parse(filePath).base;
+      return new File(name, contents);
     } catch (_) {
-      console.error(`Could not read ${filePath}`)
+      console.error(`Could not read ${filePath}`);
     }
   }
 }
@@ -42,28 +42,28 @@ export class Dir {
   }
 
   static read(dirPath) {
-    const toAbsPath = (fileName) => path.join(dirPath, fileName)
+    const toAbsPath = (fileName) => path.join(dirPath, fileName);
 
     function isFileOrDir(filePath) {
-      const stats = fs.lstatSync(filePath)
-      return stats.isFile() || stats.isDirectory()
+      const stats = fs.lstatSync(filePath);
+      return stats.isFile() || stats.isDirectory();
     }
 
     function toFileOrDir(filePath) {
-      const stats = fs.lstatSync(filePath)
-      if(stats.isFile()) {
-        return File.read(filePath)
+      const stats = fs.lstatSync(filePath);
+      if (stats.isFile()) {
+        return File.read(filePath);
       }
-      return Dir.read(filePath)
+      return Dir.read(filePath);
     }
     try {
       return fs
         .readdirSync(dirPath)
         .map(toAbsPath)
         .filter(isFileOrDir)
-        .map(toFileOrDir)
+        .map(toFileOrDir);
     } catch (_) {
-      console.error(`Could not read ${dirPath}`)
+      console.error(`Could not read ${dirPath}`);
     }
   }
 }

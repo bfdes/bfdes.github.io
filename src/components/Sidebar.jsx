@@ -1,4 +1,4 @@
-import Template from "../template"
+import Template from "../template";
 
 const Profile = () => (
   <img className="avatar" src="/images/avatar.jpg" alt="Profile photo" />

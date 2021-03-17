@@ -1,11 +1,11 @@
-import Template from "./template"
-import fs from "fs"
+import Template from "./template";
+import fs from "fs";
 import Repo from "./repo";
 import Feed from "./feed";
 import { About, NoMatch, Post, PostList, Dir, File } from "./components";
 import slugify from "./slugify";
 
-const repo = Repo.fromDir("posts")
+const repo = Repo.fromDir("posts");
 
 const posts = repo.posts.map(({ slug }) => repo.get(slug));
 const tags = Array.from(repo.tags);

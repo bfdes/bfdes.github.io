@@ -33,8 +33,7 @@ export default class Repo {
   }
 
   static fromDir(dirPath) {
-    const posts = Dir
-      .read(dirPath)
+    const posts = Dir.read(dirPath)
       .filter((file) => path.parse(file.name).ext == ".md")
       .map((file) => md.parse(file.contents));
     return new Repo(posts);
