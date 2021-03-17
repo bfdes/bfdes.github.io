@@ -1,4 +1,4 @@
-import slugify from "src/slugify"
+import slugify from "src/slugify";
 
 const testCases = [
   ["", ""],
@@ -7,13 +7,12 @@ const testCases = [
   ["right padded ", "right-padded"],
   ["-d-a-s-h-e-d-", "d-a-s-h-e-d"],
   ["double--dashed", "double-dashed"],
-  ["under_d", "under_d"]
-]
+  ["under_d", "under_d"],
+];
 
 describe("slugify", () => {
-  for(const [testCase, expectedValue] of testCases) {
-    it(`abbreviates "${testCase}"`, () => 
-      expect(slugify(testCase)).toBe(expectedValue)
-    )
+  for (const [testCase, expectedValue] of testCases) {
+    it(`abbreviates "${testCase}"`, () =>
+      expect(slugify(testCase)).toBe(expectedValue));
   }
-})
+});
