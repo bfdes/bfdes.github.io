@@ -1,8 +1,8 @@
-import Template from "src/template";
+import Template from "src/template"
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-import { Post, PaginationLink } from "src/components";
+import { PaginationLink } from "src/components";
 
 let container;
 

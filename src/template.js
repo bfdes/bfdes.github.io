@@ -1,39 +1,7 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import fs from "fs";
-import path from "path";
 import * as Components from "./components";
-
-class File {
-  constructor(name, contents) {
-    this.name = name;
-    this.contents = contents;
-  }
-
-  write(rootPath) {
-    const filePath = path.join(rootPath, this.name);
-    try {
-      fs.writeFileSync(filePath, this.contents);
-    } catch (_) {
-      console.error(`Could not write to ${filePath}`)
-    }
-  }
-}
-
-class Dir {
-  constructor(name, contents) {
-    this.name = name;
-    this.contents = contents;
-  }
-
-  write(rootPath) {
-    const dirPath = path.join(rootPath, this.name);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath);
-    }
-    this.contents.forEach((file) => file.write(dirPath));
-  }
-}
+import { File, Dir } from "./fs"
 
 export default {
   createElement: function (type, props, ...children) {
@@ -58,5 +26,5 @@ export default {
     }
     return React.createElement(type, props, ...children);
   },
-  createFragment: React.Fragment,
+  Fragment: React.Fragment,
 };

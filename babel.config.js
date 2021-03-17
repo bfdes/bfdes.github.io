@@ -5,7 +5,7 @@ module.exports = {
       "@babel/preset-react",
       {
         pragma: "Template.createElement",
-        pragmaFrag: "Template.createFragment",
+        pragmaFrag: "Template.Fragment",
       },
     ],
   ],

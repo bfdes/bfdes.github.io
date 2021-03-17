@@ -23,7 +23,7 @@ function retextCount() {
   }
 }
 
-export default function parse(contents) {
+export function parse(contents) {
   let file = vfile({ contents });
   matter(file, { strip: true });
   // Extract metadata

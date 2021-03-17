@@ -1,4 +1,4 @@
-import parse from "src/md";
+import * as md from "src/md";
 
 const meta = {
   title: "Complex numbers",
@@ -25,7 +25,7 @@ const markup = [
   `,
 ].join("\n");
 
-const post = parse(Buffer.from(markup));
+const post = md.parse(Buffer.from(markup));
 
 describe("md.parse", () => {
   it("extracts frontmatter", () => {

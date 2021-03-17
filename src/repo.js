@@ -1,3 +1,7 @@
+import path from "path";
+import * as md from "./md";
+import { Dir } from "./fs";
+
 export default class Repo {
   constructor(posts) {
     this.posts = posts.sort((p, q) => q.created - p.created);
@@ -26,5 +30,13 @@ export default class Repo {
       next,
       ...this.posts[i],
     };
+  }
+
+  static fromDir(dirPath) {
+    const posts = Dir
+      .read(dirPath)
+      .filter((file) => path.parse(file.name).ext == ".md")
+      .map((file) => md.parse(file.contents));
+    return new Repo(posts);
   }
 }

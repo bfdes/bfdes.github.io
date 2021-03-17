@@ -1,5 +1,5 @@
+import Template from "../template"
 import slugify from "../slugify";
-import Template from "../template";
 
 const Tag = ({ value }) => <a href={`/tags/${slugify(value)}.html`}>{value}</a>;
 
