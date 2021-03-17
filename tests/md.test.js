@@ -35,7 +35,7 @@ describe("md.parse", () => {
     expect(post.summary).toBe(meta.summary);
   });
 
-  it("extracts an article body", () => expect(post.body).toBeDefined());
+  it("extracts article", () => expect(post.body).toBeDefined());
 
-  it("computes an article word count", () => expect(post.wordCount).toBe(12));
+  it("computes article word count", () => expect(post.wordCount).toBe(12));
 });
