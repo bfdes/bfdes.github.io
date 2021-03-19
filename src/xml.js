@@ -11,12 +11,15 @@ export class Attributes extends Map {
   }
 }
 
-export class Leaf {
+class Tree {
   constructor(name, content, attributes = Attributes.empty()) {
     this.name = name;
     this.content = content;
     this.attributes = attributes;
   }
+}
+
+export class Leaf extends Tree {
   toString() {
     const { name, content, attributes } = this;
     if (content && attributes.size) {
@@ -32,15 +35,10 @@ export class Leaf {
   }
 }
 
-export class Branch {
-  constructor(name, children, attributes = Attributes.empty()) {
-    this.name = name;
-    this.children = children;
-    this.attributes = attributes;
-  }
+export class Branch extends Tree {
   toString() {
-    const { name, attributes, children } = this;
-    const content = children.join("");
+    const { name, attributes } = this;
+    const content = this.content.join("");
     const openingTag = attributes.size
       ? `<${name} ${attributes}>`
       : `<${name}>`; // Handle whitespace
