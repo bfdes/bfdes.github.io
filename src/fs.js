@@ -1,12 +1,24 @@
 import fs from "fs";
 import path from "path";
 
-export class File {
+class NotImplementedError extends Error {}
+
+export class FileSystem {
   constructor(name, contents) {
     this.name = name;
     this.contents = contents;
   }
 
+  write(_) {
+    throw new NotImplementedError();
+  }
+
+  static read(_) {
+    throw new NotImplementedError();
+  }
+}
+
+export class File extends FileSystem {
   write(rootPath) {
     const filePath = path.join(rootPath, this.name);
     try {
@@ -27,12 +39,7 @@ export class File {
   }
 }
 
-export class Dir {
-  constructor(name, contents) {
-    this.name = name;
-    this.contents = contents;
-  }
-
+export class Dir extends FileSystem {
   write(rootPath) {
     const dirPath = path.join(rootPath, this.name);
     if (!fs.existsSync(dirPath)) {
@@ -49,21 +56,22 @@ export class Dir {
       return stats.isFile() || stats.isDirectory();
     }
 
-    function toFileOrDir(filePath) {
-      const stats = fs.lstatSync(filePath);
-      if (stats.isFile()) {
-        return File.read(filePath);
-      }
-      return Dir.read(filePath);
-    }
     try {
       return fs
         .readdirSync(dirPath)
         .map(toAbsPath)
         .filter(isFileOrDir)
-        .map(toFileOrDir);
+        .map(read);
     } catch (_) {
       console.error(`Could not read ${dirPath}`);
     }
   }
+}
+
+function read(path) {
+  const stats = fs.lstatSync(path);
+  if (stats.isFile()) {
+    return File.read(path);
+  }
+  return Dir.read(path);
 }
