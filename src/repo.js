@@ -1,41 +1,31 @@
-import path from "path";
-import * as md from "./md";
-import { Dir } from "./fs";
-
 export default class Repo {
   constructor(posts) {
-    this.posts = posts.sort((p, q) => q.created - p.created);
-    this.tags = new Set(posts.flatMap((p) => p.tags));
-  }
+    this.posts = [];
 
-  filter(tag) {
-    return this.posts.filter((p) => p.tags.includes(tag));
-  }
+    posts.sort((p, q) => q.created - p.created);
 
-  get(slug) {
-    const i = this.posts.findIndex((p) => p.slug == slug);
-    if (i === -1) {
-      return null; // Not found
+    for (let i = 0; i < posts.length; i++) {
+      let previous;
+      let next;
+      if (i > 0) {
+        next = posts[i - 1].slug;
+      }
+      if (i < posts.length - 1) {
+        previous = posts[i + 1].slug;
+      }
+      this.posts.push({
+        previous,
+        next,
+        ...posts[i],
+      });
     }
-    let previous;
-    let next;
-    if (i > 0) {
-      next = this.posts[i - 1].slug;
-    }
-    if (i < this.posts.length - 1) {
-      previous = this.posts[i + 1].slug;
-    }
-    return {
-      previous,
-      next,
-      ...this.posts[i],
-    };
-  }
 
-  static fromDir(dirPath) {
-    const posts = Dir.read(dirPath)
-      .filter((file) => path.parse(file.name).ext == ".md")
-      .map((file) => md.parse(file.contents));
-    return new Repo(posts);
+    this.tags = new Set();
+
+    for (const post of posts) {
+      for (const tag of post.tags) {
+        this.tags.add(tag);
+      }
+    }
   }
 }

@@ -1,4 +1,22 @@
 import Repo from "src/repo";
+import isSorted from "./isSorted";
+
+expect.extend({
+  toBeSorted(received, cmp) {
+    const pass = isSorted(received, cmp);
+    if (pass) {
+      return {
+        message: () => `expected [${received}] not to be sorted`,
+        pass,
+      };
+    } else {
+      return {
+        message: () => `expected [${received}] to be sorted`,
+        pass,
+      };
+    }
+  },
+});
 
 const posts = [
   {
@@ -33,16 +51,29 @@ const posts = [
 const repo = new Repo(posts);
 
 describe("Repo.posts", () => {
-  it("returns all posts", () => {
-    const actualPosts = new Set(repo.posts);
-    const expectedPosts = new Set(posts);
-    expect(actualPosts).toEqual(expectedPosts);
-  });
+  it("returns all posts", () =>
+    expect(repo.posts.length).toEqual(posts.length));
+
   it("returns posts in reverse chronological order", () => {
-    const orderedPosts = posts.sort(
-      (p, q) => p.created.getTime() - q.created.getTime()
-    );
-    expect(repo.posts).toEqual(orderedPosts);
+    const cmp = (p, q) => q.created - p.created;
+    expect(repo.posts).toBeSorted(cmp);
+  });
+
+  it("returns paged posts", () => {
+    const [first, second, third] = posts;
+    expect(repo.posts[0]).toEqual({
+      ...first,
+      previous: second.slug,
+    });
+    expect(repo.posts[1]).toEqual({
+      ...second,
+      previous: third.slug,
+      next: first.slug,
+    });
+    expect(repo.posts[2]).toEqual({
+      ...third,
+      next: second.slug,
+    });
   });
 });
 
@@ -52,39 +83,4 @@ describe("Repo.tags", () => {
     const expectedTags = new Set(posts.flatMap((p) => p.tags));
     expect(actualtags).toEqual(expectedTags);
   });
-});
-
-describe("Repo.filter", () => {
-  it("filters posts by tag", () => {
-    const tag = "Algorithms";
-    const taggedPosts = posts.filter((p) => p.tags.includes(tag));
-    const actualPosts = new Set(repo.filter(tag));
-    const expectedPosts = new Set(taggedPosts);
-    expect(actualPosts).toEqual(expectedPosts);
-  });
-});
-
-describe("Repo.get", () => {
-  it("fetches posts by slug", () => {
-    const slug = posts[0].slug;
-    expect(repo.get(slug)).not.toBeNull();
-  });
-  it("returns paged posts", () => {
-    const [first, second, third] = posts;
-    expect(repo.get(first.slug)).toEqual({
-      ...first,
-      previous: second.slug,
-    });
-    expect(repo.get(second.slug)).toEqual({
-      ...second,
-      previous: third.slug,
-      next: first.slug,
-    });
-    expect(repo.get(third.slug)).toEqual({
-      ...third,
-      next: second.slug,
-    });
-  });
-  it("returns null for non-existent posts", () =>
-    expect(repo.get("my-fourth-post")).toBeNull());
 });

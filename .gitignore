@@ -12,7 +12,3 @@ site
 // IDE
 .idea
 .vscode
-.chrome
-
-// Environment
-.env
