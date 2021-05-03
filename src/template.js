@@ -1,54 +1,70 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as Components from "./components";
-import { File, Dir, FileSystem } from "./fs";
+import { File, Dir, FileSystem } from "./fileSystem";
+import { isString } from "./validators";
 
-class IllegalArgumentException extends Error {}
-
-const isString = (maybeStr) =>
-  typeof maybeStr === "string" || maybeStr instanceof String;
+export class RoutingError extends Error {}
 
 function createDir(props, childArray) {
-  const { name } = props;
-  const children = childArray.flat() || props.children.flat();
-
-  if (!isString(name)) {
-    const msg = "Directory name must be a string";
-    throw new IllegalArgumentException(msg);
+  if (props === null) {
+    throw new RoutingError("Directories must be named");
   }
+
+  if (!isString(props.name)) {
+    throw new RoutingError("Directory names must be strings");
+  }
+
+  const { name } = props;
+
+  if (props.children) {
+    const msg = `Contents of directory ${name} must be passed as nested children`;
+    throw new RoutingError(msg); // Why would anyone do this?
+  }
+
+  const children = childArray.flat();
+
   if (!children.every((c) => c instanceof FileSystem)) {
     const msg = `Children of directory ${name} must be directory or file elements`;
-    throw new IllegalArgumentException(msg);
+    throw new RoutingError(msg);
   }
   return new Dir(name, children);
 }
 
 function createFile(props, childArray) {
-  const { name } = props;
-  const children = childArray.flat() || props.children.flat();
-
-  if (!isString(name)) {
-    const msg = "File name must be a string";
-    throw new IllegalArgumentException(msg);
+  if (props === null) {
+    throw new RoutingError("Files must be named");
   }
+
+  if (!isString(props.name)) {
+    throw new RoutingError("File names must be a strings");
+  }
+
+  const { name } = props;
+
+  if (props.children) {
+    const msg = `Contents of file ${name} must be passed as a child`;
+    throw new RoutingError(msg); // Why would anyone do this?
+  }
+
+  const children = childArray.flat();
+
   if (children.length != 1) {
     const msg = `File ${name} must have a single child element or string`;
-    throw new IllegalArgumentException(msg);
+    throw new RoutingError(msg);
   }
 
-  const [contents] = children;
+  const [content] = children;
 
-  if (isString(contents)) {
-    return new File(name, contents);
-  }
-  if (React.isValidElement(contents)) {
-    const page = `<!DOCTYPE html>${renderToStaticMarkup(contents)}`;
+  if (React.isValidElement(content)) {
+    const page = `<!DOCTYPE html>${renderToStaticMarkup(content)}`;
     return new File(name, page);
   }
+  return new File(name, content); // Must be raw string content
 }
 
 export default {
-  createElement: function (type, props, ...children) {
+  createElement(type, props, ...children) {
     if (type == Components.Dir) {
       return createDir(props, children);
     }

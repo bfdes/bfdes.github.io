@@ -1,12 +1,16 @@
 import Template from "./template";
 import Feed from "./feed";
-import Repo from "./repo";
 import { About, NoMatch, Post, PostList, Dir, File } from "./components";
 import slugify from "./slugify";
+import { RepoReader } from "./fileReaders";
+import { FileWriter } from "./fileWriters";
+import fs from "fs"
+import path from "path"
 
-const repo = Repo.fromDir("posts");
+const repoReader = new RepoReader(fs)
+const repo = repoReader.read(path.join(__dirname, "posts"))
 
-const posts = repo.posts.map(({ slug }) => repo.get(slug));
+const posts = repo.posts;
 const tags = Array.from(repo.tags);
 const feed = new Feed(posts);
 
@@ -34,9 +38,15 @@ const router = (
     <Dir name="tags">
       {tags.map((tag) => (
         <File name={`${slugify(tag)}.html`} key={tag}>
-          <PostList posts={repo.filter(tag)} />
+          <PostList posts={posts.filter((post) => post.tags.includes(tag))} />
         </File>
       ))}
+    </Dir>
+    <Dir name="images">
+      <File name="avatar.jpg">{""}</File>
+    </Dir>
+    <Dir name="styles">
+      <File name="main.css">{""}</File>
     </Dir>
     <File name="feed.rss">{feed.toString()}</File>
     <File name="feed.xml">{feed.toString()}</File>
@@ -44,19 +54,6 @@ const router = (
   </Dir>
 );
 
-router.write(".");
+const fileWriter = new FileWriter(fs)
 
-function copy(source, target) {
-  try {
-    execSync(`cp -R ${source} ${target}`, { stdio: "ignore" });
-  } catch (_) {
-    console.error(`Could not move ${source} to ${target}`);
-    process.exit(1);
-  }
-}
-
-// styles/*.{css}
-copy("styles", "site/styles");
-
-// images/*.{jpg, png}
-copy("images", "site/images");
+fileWriter.write(router, ".");

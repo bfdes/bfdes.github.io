@@ -6,8 +6,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "node build.js",
-    "run": "node dist/bundle.js",
+    "build:project": "node build.js",
+    "build:site": "node ssg.js",
     "lint": "eslint \"**/*.{jsx,js}\"",
     "format": "prettier --write .",
     "test": "jest"

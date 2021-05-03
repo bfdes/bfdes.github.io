@@ -6,6 +6,6 @@ require("esbuild")
     jsxFragment: "Template.Fragment",
     platform: "node",
     target: "node14",
-    outfile: "bundle.js",
+    outfile: "ssg.js",
   })
   .catch(() => process.exit(1));

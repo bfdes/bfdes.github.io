@@ -1,7 +1,7 @@
 rm -rf site
 
-yarn build
-yarn run
+yarn build:project
+yarn build:site
 
 cd site
 git init
