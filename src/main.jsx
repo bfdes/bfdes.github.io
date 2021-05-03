@@ -1,7 +1,6 @@
 import Template from "./template";
-import fs from "fs";
-import Repo from "./repo";
 import Feed from "./feed";
+import Repo from "./repo";
 import { About, NoMatch, Post, PostList, Dir, File } from "./components";
 import slugify from "./slugify";
 
@@ -9,6 +8,7 @@ const repo = Repo.fromDir("posts");
 
 const posts = repo.posts.map(({ slug }) => repo.get(slug));
 const tags = Array.from(repo.tags);
+const feed = new Feed(posts);
 
 const router = (
   <Dir name="site">
@@ -19,11 +19,11 @@ const router = (
       <NoMatch />
     </File>
     <File name="index.html">
-      <PostList posts={repo.posts} />
+      <PostList posts={posts} />
     </File>
     <Dir name="posts">
       <File name="index.html">
-        <PostList posts={repo.posts} />
+        <PostList posts={posts} />
       </File>
       {posts.map((post) => (
         <File name={`${post.slug}.html`} key={post.slug}>
@@ -38,17 +38,13 @@ const router = (
         </File>
       ))}
     </Dir>
+    <File name="feed.rss">{feed.toString()}</File>
+    <File name="feed.xml">{feed.toString()}</File>
+    <File name="rss.xml">{feed.toString()}</File>
   </Dir>
 );
 
 router.write(".");
-
-// feed.rss feed.xml rss.xml
-const feed = new Feed(repo.posts);
-
-fs.writeFileSync("site/feed.rss", feed.toString());
-fs.writeFileSync("site/feed.xml", feed.toString());
-fs.writeFileSync("site/rss.xml", feed.toString());
 
 function copy(source, target) {
   try {

@@ -6,10 +6,10 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "compile": "node build.js",
-    "build": "node dist/ssg.js",
-    "lint": "eslint \"**/*.{tsx,ts,jsx,js}\"",
-    "format": "prettier --write \"**/*.{tsx,ts,jsx,js,css,html,json,yml,md}\"",
+    "build": "node build.js",
+    "run": "node dist/ssg.js",
+    "lint": "eslint \"**/*.{jsx,js}\"",
+    "format": "prettier --write .",
     "test": "jest"
   },
   "dependencies": {

@@ -20,8 +20,6 @@ jobs:
           key: node_modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Lint code
-        run: yarn lint
       - name: Run tests
         run: yarn test --verbose --coverage
       - name: Upload test coverage report
