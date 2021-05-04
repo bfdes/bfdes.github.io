@@ -1,4 +1,0 @@
-{
-  "watch": ["dist", "posts", "images", "styles"],
-  "ext": "md,css,jpg,png,js"
-}

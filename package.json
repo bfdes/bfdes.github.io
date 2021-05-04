@@ -8,6 +8,7 @@
   "scripts": {
     "build:project": "node build.js",
     "build:site": "node ssg.js",
+    "build": "yarn build:project && yarn build:site",
     "lint": "eslint \"**/*.{jsx,js}\"",
     "format": "prettier --write .",
     "test": "jest"
@@ -28,7 +29,6 @@
     "eslint-plugin-react": "^7.22.0",
     "husky": "^5.0.9",
     "jest": "^26.6.3",
-    "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "rehype-highlight": "^4.0.0",
     "rehype-katex": "^4.0.0",
