@@ -10,4 +10,3 @@ export { default as TagList } from "./TagList";
 export { default as WordCount } from "./WordCount";
 export { default as File } from "./File";
 export { default as Dir } from "./Dir";
-export { default as Feed } from "./Feed";
