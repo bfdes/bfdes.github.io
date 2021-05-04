@@ -18,10 +18,10 @@ Run the following commands within the repository root:
 yarn install
 # Installs all dependencies
 
-yarn build
-# Builds the static site generator, and puts it in dist/ssg.js
+yarn build:project
+# Builds the static site generator, and puts it in ssg.js
 
-yarn run
+yarn build:site
 # Builds the website itself, and puts it in site/
 ```
 
@@ -70,4 +70,11 @@ yarn format
 yarn test
 ```
 
-GitHub Actions will also run tests for every code push.
+[GitHub Actions](https://github.com/bfdes/bfdes.github.io/actions) will also run tests for every code push.
+
+## Deployment
+
+The output of `yarn build` can be deployed
+
+1. by a decicated fileserver such as [NGINX](https://www.nginx.com/), or
+2. a hosting platform like [GitHub Pages](https://pages.github.com/).
