@@ -3,5 +3,5 @@ node_modules
 
 // Built files
 coverage
-dist
 site
+ssg.js

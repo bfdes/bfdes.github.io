@@ -1,4 +1,5 @@
 import Template from "../template";
+import { GitHub, RSS } from "../images";
 
 const Profile = () => (
   <img className="avatar" src="/images/avatar.jpg" alt="Profile photo" />
@@ -18,10 +19,10 @@ const NavBar = () => (
 const Social = () => (
   <div id="social">
     <a className="nav-item" href="https://www.github.com/bfdes">
-      <img className="badge" src="/images/github.png" alt="GitHub link" />
+      <img className="badge" src={GitHub} alt="GitHub link" />
     </a>
     <a className="nav-item" href="/feed.rss">
-      <img className="badge" src="/images/rss.png" alt="RSS link" />
+      <img className="badge" src={RSS} alt="RSS link" />
     </a>
   </div>
 );

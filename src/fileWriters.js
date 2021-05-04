@@ -1,6 +1,8 @@
 import path from "path";
 import { File, Dir } from "./fileSystem";
 
+class IllegalArgumentError extends Error {}
+
 export class FileWriteError extends Error {
   constructor(filePath, ...args) {
     const msg = `Could not write to ${filePath}`;
@@ -43,6 +45,9 @@ export class FileWriter {
       this.writeFile(rootPath, fileOrDir);
     } else if (fileOrDir instanceof Dir) {
       this.writeDir(rootPath, fileOrDir);
+    } else {
+      const msg = `Unsupported resource type: ${fileOrDir}`;
+      throw new IllegalArgumentError(msg);
     }
   }
 }

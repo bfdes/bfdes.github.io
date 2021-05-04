@@ -1,5 +1,6 @@
 import Template from "../template";
 import Sidebar from "./Sidebar";
+import { Favicon } from "../images";
 
 const Head = () => (
   <head>
@@ -9,7 +10,7 @@ const Head = () => (
     <meta name="description" content="Personal blog" />
     <meta name="author" content="Bruno Fernandes" />
     <title>bfdes.in</title>
-    <link href="/images/favicon.png" rel="icon" />
+    <link href={Favicon} rel="icon" />
     <link
       href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono&amp;display=swap"
       rel="stylesheet"
