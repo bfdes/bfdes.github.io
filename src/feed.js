@@ -1,11 +1,11 @@
 import { node, Attributes, Branch } from "./xml";
 
 export default class Feed extends Branch {
-  constructor(metaData) {
+  constructor(metadata) {
     const title = node("title", "bfdes.in");
     const link = node("link", "https://www.bfdes.in");
     const description = node("description", "Programming and Technology blog");
-    const items = metaData.map(({ created, slug, title, summary }) => {
+    const items = metadata.map(({ created, slug, title, summary }) => {
       const url = `https://www.bfdes.in/posts/${slug}.html`;
       return node("item", [
         node("title", title),
