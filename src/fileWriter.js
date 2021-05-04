@@ -10,7 +10,7 @@ export class FileWriteError extends Error {
   }
 }
 
-export class FileWriter {
+export default class FileWriter {
   constructor(fs) {
     this.fs = fs;
   }

@@ -3,7 +3,7 @@ import Feed from "./feed";
 import { About, NoMatch, Post, PostList, Dir, File } from "./components";
 import slugify from "./slugify";
 import { RepoReader } from "./fileReaders";
-import { FileWriter } from "./fileWriters";
+import FileWriter from "./fileWriter";
 import { Avatar } from "./images";
 import css from "./main.css";
 import fs from "fs";

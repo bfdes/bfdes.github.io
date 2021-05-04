@@ -1,12 +1,13 @@
 import { mk } from "src/fileSystem";
-import { FileWriter, FileWriteError } from "src/fileWriters";
+import FileWriter, { FileWriteError } from "src/fileWriter";
+import path from "path";
 
 describe("FileWriter", () => {
   const rootPath = "/Users/johndoe/Documents";
-  const fileName = "hello-world.txt";
-  const fileContents = "Hello, World!";
 
   it("writes file contents", () => {
+    const fileName = "hello-world.txt";
+    const fileContents = "Hello, World!";
     const stubFs = {
       writeFileSync: jest.fn(),
     };
@@ -17,7 +18,27 @@ describe("FileWriter", () => {
     expect(stubFs.writeFileSync).toHaveBeenCalledTimes(1);
   });
 
+  it("writes images in binary format", () => {
+    const fileName = "avatar.jpg";
+    const fileContents = "binary string";
+    const stubFs = {
+      writeFileSync: jest.fn(),
+    };
+    const fileWriter = new FileWriter(stubFs);
+    const file = mk(fileName, fileContents);
+    fileWriter.write(rootPath, file);
+
+    expect(stubFs.writeFileSync).toHaveBeenCalledTimes(1);
+    expect(stubFs.writeFileSync).toHaveBeenCalledWith(
+      path.join(rootPath, fileName),
+      fileContents,
+      "binary"
+    );
+  });
+
   it("handles write errors", () => {
+    const fileName = "hello-world.txt";
+    const fileContents = "Hello, World!";
     const stubFs = {
       writeFileSync(_filePath, _contents) {
         throw new Error();
