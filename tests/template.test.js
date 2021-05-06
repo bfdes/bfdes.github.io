@@ -61,15 +61,6 @@ describe("File", () => {
 
   it("requires contents", () =>
     expect(() => <File name="hello-world.html" />).toThrow(RoutingError));
-
-  it(`does not accept "children" prop`, () => {
-    const name = "hello-world.html";
-    const contents = "Hello, World!";
-
-    expect(() => <File name={name} children={contents} />).toThrow(
-      RoutingError
-    );
-  });
 });
 
 describe("Dir", () => {
@@ -89,12 +80,4 @@ describe("Dir", () => {
 
   it("requires FileSystem element contents", () =>
     expect(() => <Dir name="posts">Hello, World!</Dir>).toThrow(RoutingError));
-
-  it(`does not accept "children" prop`, () =>
-    expect(() => (
-      <Dir
-        name="posts"
-        children={<File name="hello-world.html">Hello, World!</File>}
-      />
-    )).toThrow(RoutingError));
 });

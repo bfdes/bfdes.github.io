@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import Template from "../template";
 import Date from "./Date";
 import PaginationLink from "./PaginationLink";
@@ -26,6 +27,18 @@ const Post = ({ value }) => {
       </div>
     </Page>
   );
+};
+
+Post.propTypes = {
+  value: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    created: PropTypes.instanceOf(global.Date).isRequired,
+    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    wordCount: PropTypes.number.isRequired,
+    previous: PropTypes.string,
+    next: PropTypes.string,
+  }),
 };
 
 export default Post;

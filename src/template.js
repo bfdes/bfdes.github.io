@@ -16,12 +16,6 @@ function createDir(props, childArray) {
   }
 
   const { name } = props;
-
-  if (props.children) {
-    const msg = `Contents of directory ${name} must be passed as nested children`;
-    throw new RoutingError(msg); // Why would anyone do this?
-  }
-
   const children = childArray.flat();
 
   if (!children.every((c) => c instanceof FileSystem)) {
@@ -41,12 +35,6 @@ function createFile(props, childArray) {
   }
 
   const { name } = props;
-
-  if (props.children) {
-    const msg = `Contents of file ${name} must be passed as a child`;
-    throw new RoutingError(msg); // Why would anyone do this?
-  }
-
   const children = childArray.flat();
 
   if (children.length != 1) {

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import Template from "../template";
 
 const monthNames = [
@@ -20,6 +21,10 @@ const Date = ({ value }) => {
   const month = monthNames[value.getMonth()];
   const year = value.getFullYear();
   return <>{`${day} ${month} ${year}`}</>;
+};
+
+Date.propTypes = {
+  value: PropTypes.instanceOf(global.Date).isRequired,
 };
 
 export default Date;

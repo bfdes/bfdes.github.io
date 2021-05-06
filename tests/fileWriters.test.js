@@ -40,7 +40,7 @@ describe("FileWriter", () => {
     const fileName = "hello-world.txt";
     const fileContents = "Hello, World!";
     const stubFs = {
-      writeFileSync(_filePath, _contents) {
+      writeFileSync() {
         throw new Error();
       },
     };
@@ -72,7 +72,7 @@ describe("DirWriter", () => {
 
   it("handles directory write errors", () => {
     const stubFs = {
-      mkdirSync(_) {
+      mkdirSync() {
         throw new Error();
       },
     };
@@ -85,7 +85,7 @@ describe("DirWriter", () => {
   it("handles file write errors", () => {
     const stubFs = {
       mkdirSync: jest.fn(),
-      writeFileSync(_filePath, _contents) {
+      writeFileSync() {
         throw new Error();
       },
     };

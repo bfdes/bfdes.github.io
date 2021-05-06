@@ -15,7 +15,16 @@
   },
   "dependencies": {
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "rehype-highlight": "^4.0.0",
+    "rehype-katex": "^4.0.0",
+    "rehype-stringify": "^8.0.0",
+    "remark-math": "^4.0.0",
+    "remark-parse": "^9.0.0",
+    "remark-rehype": "^8.0.0",
+    "retext-stringify": "^2.0.4",
+    "vfile": "^4.2.1",
+    "vfile-matter": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
@@ -30,14 +39,6 @@
     "husky": "^5.0.9",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
-    "rehype-highlight": "^4.0.0",
-    "rehype-katex": "^4.0.0",
-    "rehype-stringify": "^8.0.0",
-    "remark-math": "^4.0.0",
-    "remark-parse": "^9.0.0",
-    "remark-rehype": "^8.0.0",
-    "retext-stringify": "^2.0.4",
-    "vfile": "^4.2.1",
-    "vfile-matter": "^2.0.0"
+    "prop-types": "^15.7.2"
   }
 }

@@ -12,7 +12,7 @@ export class FileReadError extends Error {
 }
 
 class Reader {
-  read(_) {
+  read() {
     throw new NotImplementedError();
   }
 }

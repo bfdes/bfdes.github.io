@@ -10,6 +10,7 @@ module.exports = {
   settings: {
     react: {
       version: "detect",
+      pragma: "Template",
     },
   },
 };

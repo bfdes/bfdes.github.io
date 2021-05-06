@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import Template from "../template";
 import Sidebar from "./Sidebar";
 import { Favicon } from "../images";
@@ -36,11 +37,19 @@ const Body = ({ children }) => (
   </body>
 );
 
+Body.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 const Page = ({ children }) => (
   <html lang="en">
     <Head />
     <Body>{children}</Body>
   </html>
 );
+
+Page.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default Page;

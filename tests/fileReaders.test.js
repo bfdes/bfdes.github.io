@@ -26,7 +26,7 @@ describe("FileReader", () => {
 
   it("fails when file is missing", () => {
     const stubFs = {
-      readFileSync(_) {
+      readFileSync() {
         throw new Error();
       },
     };
@@ -55,7 +55,7 @@ describe("DirReader", () => {
 
   it("fails when directory is missing", () => {
     const stubFs = {
-      readdirSync(_) {
+      readdirSync() {
         throw new Error();
       },
     };
@@ -112,7 +112,7 @@ describe("RepoReader", () => {
 
   it("only reads markdown files", () => {
     const stubFs = {
-      readFileSync(_) {
+      readFileSync() {
         throw new Error();
       },
       readdirSync(dirPath) {
@@ -131,7 +131,7 @@ describe("RepoReader", () => {
 
   it("fails when posts are missing", () => {
     const stubFs = {
-      readdirSync(_) {
+      readdirSync() {
         throw new Error();
       },
     };

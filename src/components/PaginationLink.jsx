@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import Template from "../template";
 
 const PaginationLink = ({ next, children }) => (
@@ -9,5 +10,10 @@ const PaginationLink = ({ next, children }) => (
     )}
   </span>
 );
+
+PaginationLink.propTypes = {
+  next: PropTypes.string,
+  children: PropTypes.node,
+};
 
 export default PaginationLink;
