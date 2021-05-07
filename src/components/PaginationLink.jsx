@@ -13,7 +13,7 @@ const PaginationLink = ({ next, children }) => (
 
 PaginationLink.propTypes = {
   next: PropTypes.string,
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 };
 
 export default PaginationLink;

@@ -8,7 +8,7 @@ const WordCount = ({ value }) => (
 );
 
 WordCount.propTypes = {
-  value: PropTypes.number,
+  value: PropTypes.number.isRequired,
 };
 
 export default WordCount;
