@@ -11,6 +11,7 @@ require("esbuild")
     },
     outfile: "build.js",
     platform: "node",
+    sourcemap: "inline",
     target: "node14",
   })
   .catch(() => process.exit(1));

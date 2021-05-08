@@ -7,7 +7,7 @@
   "private": false,
   "scripts": {
     "build:project": "node esbuild.js",
-    "build:site": "node build.js",
+    "build:site": "node --enable-source-maps build.js",
     "build": "yarn build:project && yarn build:site",
     "format": "prettier --write .",
     "lint": "eslint \"**/*.{jsx,js}\"",
