@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Favicon } from "../images";
-import Sidebar from "./Sidebar";
 import Template from "../template";
+import Sidebar from "./Sidebar";
 
 const Head = () => (
   <head>

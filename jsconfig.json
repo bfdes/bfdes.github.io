@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "jsxFactory": "Template.createElement",
+    "jsxFragmentFactory": "Template.Fragment"
+  }
+}

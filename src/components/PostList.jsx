@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import Template from "../template";
-import TagList from "./TagList";
 import Date from "./Date";
-import WordCount from "./WordCount";
 import Page from "./Page";
+import TagList from "./TagList";
+import WordCount from "./WordCount";
 
 const PostList = ({ posts }) => (
   <Page>

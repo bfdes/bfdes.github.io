@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import Template from "../template";
 import Date from "./Date";
+import Page from "./Page";
 import PaginationLink from "./PaginationLink";
 import TagList from "./TagList";
 import WordCount from "./WordCount";
-import Page from "./Page";
 
 const Post = ({ value }) => {
   const { title, body, created, tags, wordCount, previous, next } = value;
