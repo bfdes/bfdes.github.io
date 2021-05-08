@@ -1,6 +1,6 @@
 require("esbuild")
   .build({
-    entryPoints: ["src/main.jsx"],
+    entryPoints: ["src/main.js"],
     bundle: true,
     loader: {
       ".png": "dataurl",
