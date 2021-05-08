@@ -1,4 +1,4 @@
-import { parse, MissingMetadataError, MetadataParseError } from "src/md";
+import { MetadataParseError, MissingMetadataError, parse } from "src/md";
 
 describe("md.parse", () => {
   it("extracts frontmatter", () => {

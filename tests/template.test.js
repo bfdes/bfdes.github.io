@@ -1,7 +1,8 @@
-import Template, { RoutingError } from "src/template";
-import { File, Dir } from "src/components";
-import { mk } from "src/fileSystem";
 import React from "react";
+import { Dir, File } from "src/components";
+import { mk } from "src/fileSystem";
+import { RoutingError } from "src/template";
+import Template from "src/template";
 
 describe("Template.createElement", () => {
   it("creates files", () => {

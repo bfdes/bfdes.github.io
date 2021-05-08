@@ -1,4 +1,4 @@
-import { node, Attributes, Branch } from "./xml";
+import { Attributes, Branch, node } from "./xml";
 
 export default class Feed extends Branch {
   constructor(metadata) {

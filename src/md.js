@@ -1,18 +1,18 @@
-import unified from "unified";
-import remarkParse from "remark-parse";
-import remarkMath from "remark-math";
-import remarkRehype from "remark-rehype";
 import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
+import remarkMath from "remark-math";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import unified from "unified";
 import vfile from "vfile";
 import matter from "vfile-matter";
 import slugify from "./slugify";
 import {
-  TitleValidator,
   SummaryValidator,
   TagValidator,
   TimestampValidator,
+  TitleValidator,
 } from "./validators";
 
 // Markdown AST -> word count compiler

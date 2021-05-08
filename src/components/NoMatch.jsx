@@ -1,5 +1,5 @@
-import Template from "../template";
 import Page from "./Page";
+import Template from "../template";
 
 const NoMatch = () => (
   <Page>

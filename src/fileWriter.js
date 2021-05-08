@@ -1,5 +1,5 @@
 import path from "path";
-import { File, Dir } from "./fileSystem";
+import { Dir, File } from "./fileSystem";
 
 class IllegalArgumentError extends Error {}
 

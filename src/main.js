@@ -1,9 +1,8 @@
+import fs from "fs";
+import path from "path";
 import { RepoReader } from "./fileReaders";
 import FileWriter from "./fileWriter";
 import Router from "./Router";
-
-import fs from "fs";
-import path from "path";
 
 const repoReader = new RepoReader(fs);
 const fileWriter = new FileWriter(fs);

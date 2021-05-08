@@ -1,6 +1,6 @@
+import path from "path";
 import { mk } from "src/fileSystem";
 import FileWriter, { FileWriteError } from "src/fileWriter";
-import path from "path";
 
 describe("FileWriter", () => {
   const rootPath = "/Users/johndoe/Documents";

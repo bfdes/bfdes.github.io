@@ -9,8 +9,8 @@
     "build:project": "node esbuild.js",
     "build:site": "node build.js",
     "build": "yarn build:project && yarn build:site",
-    "lint": "eslint \"**/*.{jsx,js}\"",
     "format": "prettier --write .",
+    "lint": "eslint \"**/*.{jsx,js}\"",
     "test": "jest"
   },
   "dependencies": {

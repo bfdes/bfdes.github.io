@@ -1,7 +1,7 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as Components from "./components";
-import { File, Dir, FileSystem } from "./fileSystem";
+import { Dir, File, FileSystem } from "./fileSystem";
 import { isString } from "./validators";
 
 export class RoutingError extends Error {}

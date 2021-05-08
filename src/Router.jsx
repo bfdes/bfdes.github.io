@@ -1,9 +1,9 @@
-import Template from "./template";
+import { About, Dir, File, NoMatch, Post, PostList } from "./components";
 import Feed from "./feed";
-import { About, NoMatch, Post, PostList, Dir, File } from "./components";
-import slugify from "./slugify";
 import { Avatar } from "./images";
 import css from "./main.css";
+import slugify from "./slugify";
+import Template from "./template";
 
 export default function Router(repo) {
   const posts = repo.posts;

@@ -1,8 +1,8 @@
 import {
   FieldValidator,
-  TitleValidator,
   TagValidator,
   TimestampValidator,
+  TitleValidator,
 } from "src/validators";
 
 describe("FieldValidator", () => {

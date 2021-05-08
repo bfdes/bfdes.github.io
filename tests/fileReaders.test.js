@@ -1,12 +1,12 @@
-import {
-  FileReader,
-  DirReader,
-  RepoReader,
-  FileReadError,
-} from "src/fileReaders";
-import Repo from "src/repo";
-import { MissingMetadataError } from "src/md";
 import path from "path";
+import {
+  DirReader,
+  FileReader,
+  FileReadError,
+  RepoReader,
+} from "src/fileReaders";
+import { MissingMetadataError } from "src/md";
+import Repo from "src/repo";
 
 describe("FileReader", () => {
   it("resolves files by path", () => {

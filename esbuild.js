@@ -1,16 +1,16 @@
 require("esbuild")
   .build({
-    entryPoints: ["src/main.js"],
     bundle: true,
+    entryPoints: ["src/main.js"],
+    jsxFactory: "Template.createElement",
+    jsxFragment: "Template.Fragment",
     loader: {
       ".png": "dataurl",
       ".jpg": "binary",
       ".css": "text",
     },
-    jsxFactory: "Template.createElement",
-    jsxFragment: "Template.Fragment",
+    outfile: "build.js",
     platform: "node",
     target: "node14",
-    outfile: "build.js",
   })
   .catch(() => process.exit(1));
