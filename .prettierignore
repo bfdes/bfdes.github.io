@@ -2,6 +2,7 @@
 node_modules
 
 // Built files
+build.js
 coverage
 site
-ssg.js
+

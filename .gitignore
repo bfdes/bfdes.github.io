@@ -2,9 +2,9 @@
 node_modules
 
 // Built files
+build.js
 coverage
 site
-ssg.js
 
 // Platform specific
 .DS_Store
