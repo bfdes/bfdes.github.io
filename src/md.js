@@ -5,8 +5,8 @@ import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import unified from "unified";
-import vfile from "vfile";
-import matter from "vfile-matter";
+import { VFile } from "vfile";
+import { matter } from "vfile-matter";
 import slugify from "./slugify";
 import {
   SummaryValidator,
@@ -51,7 +51,7 @@ const validators = [
 ];
 
 export function parse(contents) {
-  let file = vfile({ contents });
+  const file = new VFile(contents);
   matter(file, { strip: true });
 
   // Extract metadata
@@ -79,12 +79,9 @@ export function parse(contents) {
     .use(rehypeHighlight)
     .use(rehypeKatex)
     .use(rehypeStringify)
-    .processSync(file)
-    .toString();
+    .processSync(file).contents;
 
   // Calculate word count
-  file = vfile({ contents });
-  matter(file, { strip: true });
   const wordCount = unified()
     .use(remarkParse)
     .use(remarkMath)

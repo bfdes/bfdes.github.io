@@ -5,4 +5,5 @@ module.exports = {
     "\\.(jpg|jpeg|png)$": "./jest/assetTransformer.js",
     "\\.(js|jsx)$": ["babel-jest", { configFile: "./babel.config.js" }],
   },
+  transformIgnorePatterns: [],
 };

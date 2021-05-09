@@ -23,8 +23,8 @@
     "remark-parse": "^9.0.0",
     "remark-rehype": "^8.1.0",
     "retext-stringify": "^2.0.4",
-    "vfile": "^4.2.1",
-    "vfile-matter": "^2.0.0"
+    "vfile": "5.0.1",
+    "vfile-matter": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
