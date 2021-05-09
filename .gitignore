@@ -2,8 +2,9 @@
 node_modules
 
 // Built files
+build.js
 coverage
-dist
+site
 
 // Platform specific
 .DS_Store
@@ -11,7 +12,3 @@ dist
 // IDE
 .idea
 .vscode
-.chrome
-
-// Environment
-.env

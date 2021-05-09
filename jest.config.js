@@ -1,10 +1,8 @@
 module.exports = {
   collectCoverageFrom: ["src/**/*"],
-  moduleDirectories: [".", "src", "node_modules"],
-  moduleFileExtensions: ["ts", "tsx", "js"],
+  moduleDirectories: [".", "node_modules"],
   transform: {
-    "\\.(ts|tsx)$": "ts-jest",
-    "\\.(svg|jpg|png)$": "<rootDir>/jest/assetTransformer.js",
+    "\\.(jpg|jpeg|png)$": "./jest/assetTransformer.js",
+    "\\.(js|jsx)$": ["babel-jest", { configFile: "./babel.config.js" }],
   },
-  testRegex: "/tests/.*\\.(ts|tsx)$",
 };

@@ -1,30 +1,33 @@
 # bfdes.in
 
-![GitHub Actions](https://github.com/bfdes/bfdes.in/workflows/Test/badge.svg)
-[![Codecov](https://codecov.io/gh/bfdes/bfdes.in/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.in)
+![GitHub Actions](https://github.com/bfdes/bfdes.github.io/workflows/Test/badge.svg)
+[![Codecov](https://codecov.io/gh/bfdes/bfdes.github.io/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.github.io)
 
-Source for my personal blog, built using React SSR and written in TypeScript.
-
-The Blog is edited by supplying Markdown documents with YAML frontmatter in a posts directory beneath the root.
-
-When the server-side code is built, the posts are bundled using a custom Webpack loader.
-
-## Requirements
-
-- [Node.js](https://nodejs.org/en/) 14.x
-- [Yarn](https://classic.yarnpkg.com) 1.x
+Source for my personal blog.
 
 ## Usage
 
-### Installation
+### Requirements
 
-Run `yarn install` within the root directory.
+- [NodeJS](https://nodejs.org/en/) 14.x
+- [Yarn](https://classic.yarnpkg.com) 1.x
 
-### Local development
+Run the following commands within the repository root:
 
-Run `yarn build:dev`. Uses Webpack in watch mode to compile the TS source for both the frontend and the backend.
+```bash
+yarn install
+# Installs all dependencies
 
-Write posts in a 'posts' folder under the root directory. The format is
+yarn build:project
+# Builds the static site generator, and puts it in ssg.js
+
+yarn build:site
+# Builds the website itself, and puts it in site/
+```
+
+### Editing posts
+
+Enter Markdown articles in the posts directory with the following structure:
 
 ```
 ---
@@ -36,27 +39,42 @@ summary: <RSS SUMMARY>
 <BODY IN MARKDOWN>
 ```
 
-and the name of the markdown file should correspond to the slug of its post.
+### Supported syntax
 
-Then (also) run `yarn serve:dev` to serve the app on port 8080 using Nodemon.
+[KaTeX](https://katex.org) and [highlight.js](https://highlightjs.org) rendering plugins from the [unified.js](https://unifiedjs.com) ecosystem enable rendering of math, code:
+
+- Wrap inline math in `$`, and block math in `$$`
+- Wrap code in ` ``` `
+
+For example, the snippet
+
+````
+# Complex numbers
+
+Python supports complex numbers natively. For example, $1 + 2*j$ is written as
+
+```python
+1 + 2j
+```
+````
+
+illustrates the use of inline math, delimited by `$`, and fenced code blocks, delimited by ` ``` `.
 
 ### Testing
 
 Run the following commands to lint, format and test code, respectively:
 
 ```plaintext
- yarn lint
- yarn format
- yarn test
+yarn lint
+yarn format
+yarn test
 ```
 
-GitHub Actions will also run tests for every code push.
+[GitHub Actions](https://github.com/bfdes/bfdes.github.io/actions) will also run tests for every code push.
 
 ## Deployment
 
-Running `yarn build:prod` generates two bundles
+The output of `yarn build` can be deployed
 
-- Client code under the /static folder
-- A single file of server-side code
-
-Run the server-side code using Node.js, and optionally configure a webserver to serve assets under /static.
+1. by a decicated fileserver such as [NGINX](https://www.nginx.com/), or
+2. a hosting platform like [GitHub Pages](https://pages.github.com/).
