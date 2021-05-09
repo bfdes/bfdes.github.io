@@ -21,7 +21,7 @@
     "rehype-stringify": "^8.0.0",
     "remark-math": "^4.0.0",
     "remark-parse": "^9.0.0",
-    "remark-rehype": "^8.0.0",
+    "remark-rehype": "^8.1.0",
     "retext-stringify": "^2.0.4",
     "vfile": "^4.2.1",
     "vfile-matter": "^2.0.0"
