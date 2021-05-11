@@ -74,7 +74,7 @@ yarn test
 
 ## Deployment
 
-The output of `yarn build` can be deployed
+The output of `yarn build` can be
 
-1. by a decicated fileserver such as [NGINX](https://www.nginx.com/), or
-2. a hosting platform like [GitHub Pages](https://pages.github.com/).
+1. served by a webserver such as [NGINX](https://www.nginx.com/), or
+2. hosted by a platform like [GitHub Pages](https://pages.github.com/).
