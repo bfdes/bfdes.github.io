@@ -1,6 +1,7 @@
 import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
+import remarkGFM from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
@@ -74,6 +75,7 @@ export function parse(contents) {
   // Extract rendered post content
   const body = unified()
     .use(remarkParse)
+    .use(remarkGFM)
     .use(remarkMath)
     .use(remarkRehype)
     .use(rehypeHighlight)
@@ -84,6 +86,7 @@ export function parse(contents) {
   // Calculate word count
   const wordCount = unified()
     .use(remarkParse)
+    .use(remarkGFM)
     .use(remarkMath)
     .use(retextCount)
     .processSync(file).result;
