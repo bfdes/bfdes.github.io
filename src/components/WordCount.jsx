@@ -3,7 +3,7 @@ import Template from "../template";
 
 const WordCount = ({ value }) => (
   <>
-    {value} {value > 1 ? "words" : "word"}
+    {value} {value == 1 ? "word" : "words"}
   </>
 );
 
