@@ -21,7 +21,7 @@ const Head = () => (
       rel="stylesheet"
     />
     <link
-      href="https://unpkg.com/katex@0.12.0/dist/katex.min.css"
+      href="https://unpkg.com/katex@0.13.9/dist/katex.min.css"
       rel="stylesheet"
     />
     <link href="/styles/main.css" rel="stylesheet" />
