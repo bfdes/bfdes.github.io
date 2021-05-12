@@ -27,7 +27,7 @@ export default function Router(repo) {
         </File>
         {posts.map((post) => (
           <File name={`${post.slug}.html`} key={post.slug}>
-            <Post value={post} />
+            <Post {...post} />
           </File>
         ))}
       </Dir>
