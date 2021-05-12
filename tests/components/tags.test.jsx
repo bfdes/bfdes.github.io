@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import { TagList } from "src/components";
+import TagList from "src/components/TagList";
 import Template from "src/template";
 
 let container;

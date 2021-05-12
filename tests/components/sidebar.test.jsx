@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import { Sidebar } from "src/components";
+import Sidebar from "src/components/Sidebar";
 import Template from "src/template";
 
 let container;

@@ -1,6 +1,6 @@
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
-import { Date } from "src/components";
+import Date from "src/components/Date";
 import Template from "src/template";
 
 let container;
