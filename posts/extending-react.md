@@ -113,7 +113,7 @@ const About = () => (
 
 React cannot be used without first preprocessing or transpiling JSX to plain JavaScipt.
 
-During transpilation, build tools such as [Babel](https://babeljs.io/) and [esbuild](https://esbuild.github.io/) transform any JSX tags they encounter to calls to a pragma or directive. Historically, the pragma was `React.createElement`, but build tools made the pragma configurable to accommodate more frameworks that support JSX.
+During transpilation, build tools such as [Babel](https://babeljs.io/) and [esbuild](https://esbuild.github.io/) transform any JSX tags they encounter to calls to a JSX factory function. Historically, the factory was `React.createElement`, but build tools made the factory configurable using a pragma or transpiler directive to accommodate more frameworks that support JSX.
 
 For example, the script
 
@@ -137,7 +137,7 @@ renderToStaticMarkup(React.createElement(Welcome, { name: "Mulder" }));
 
 by the first stage of a transpiler for React.
 
-From looking at how the pragma is invoked, we can learn about its expected signature:
+From looking at how the factory function is invoked, we can learn about its expected signature:
 
 - First parameter: JSX element type. A string for lowercase types, a reference for uppercase ones.[^2]
 - Second parameter: An object keyed by props being passed to the element.
@@ -214,7 +214,7 @@ If a call to `write` fails for whatever reason, a partial write will occur. This
 
 ### Hijacking the JSX transform
 
-We tell the build tool to transform JSX tags using our _own_ pragmas:
+We tell the build tool to transform JSX tags using our _own_ factories:
 
 1. JSX elements should call `Template.createElement`, and
 2. JSX fragments should expand to reference `Template.Fragment`.[^4]
@@ -307,7 +307,7 @@ However, there are a couple of improvements that we can make:
 1. `createElement` should prevent children from being passed as `props.children`.
 2. `FileSystem.write` implementations should use the promise-based Node filesystem API.
 
-The ESLint React plugin regards passing children directly through props as [a bad practice](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-children-prop.md). It leads to quirks when children are _also_ passed through composition, as the transpiler discards `props.children` when calling the pragma. The best we can do is warn the user:
+The ESLint React plugin regards passing children directly through props as [a bad practice](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-children-prop.md). It leads to quirks when children are _also_ passed through composition, as the transpiler discards `props.children` when calling the JSX factory. The best we can do is warn the user:
 
 ```js
 // In createDir, createFile
