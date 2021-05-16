@@ -310,14 +310,9 @@ However, there are a couple of improvements that we can make:
 The ESLint React plugin regards passing children directly through props as [a bad practice](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-children-prop.md). It leads to quirks when children are _also_ passed through composition, as the transpiler discards `props.children` when calling the pragma. The best we can do is warn the user:
 
 ```js
-// In createDir
+// In createDir, createFile
 if (props.children) {
-  const msg = `Contents of directory ${name} must be passed as nested children`;
-  throw new RoutingError(msg); // Why would anyone do this?
-}
-// In createFile
-if (props.children) {
-  const msg = `Contents of file ${name} must be passed as nested children`;
+  const msg = `Contents of ${name} must be passed as nested children`;
   throw new RoutingError(msg); // Why would anyone do this?
 }
 ```
