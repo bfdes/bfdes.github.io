@@ -151,7 +151,7 @@ We can exploit a user-customisable JSX transform and what we've seen of React's 
 
 ### The filesystem abstraction
 
-Observe that files and directories on disk can be modelled as trees where files form the terminal nodes. Any file or directory should be able to write its contents to disk then when given a root path to mount to.
+Observe that files and directories on disk can be modelled as trees where files form the terminal nodes. Any file or directory should be able to write its contents to disk then when given a root path.
 
 `FileSystem` forms the notion of this interface for files and directories:
 
