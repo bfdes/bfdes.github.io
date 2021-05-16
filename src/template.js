@@ -6,7 +6,7 @@ import { isString } from "./validators";
 
 export class RoutingError extends Error {}
 
-function createDir(props, childArray) {
+function createDir(props, children) {
   if (props === null) {
     throw new RoutingError("Directories must be named");
   }
@@ -16,7 +16,7 @@ function createDir(props, childArray) {
   }
 
   const { name } = props;
-  const children = childArray.flat();
+  children = children.flat();
 
   if (!children.every((c) => c instanceof FileSystem)) {
     const msg = `Children of directory ${name} must be directory or file elements`;
@@ -25,7 +25,7 @@ function createDir(props, childArray) {
   return new Dir(name, children);
 }
 
-function createFile(props, childArray) {
+function createFile(props, children) {
   if (props === null) {
     throw new RoutingError("Files must be named");
   }
@@ -35,7 +35,6 @@ function createFile(props, childArray) {
   }
 
   const { name } = props;
-  const children = childArray.flat();
 
   if (children.length != 1) {
     const msg = `File ${name} must have a single child element or string`;
@@ -48,7 +47,7 @@ function createFile(props, childArray) {
     const page = `<!DOCTYPE html>${renderToStaticMarkup(content)}`;
     return new File(name, page);
   }
-  return new File(name, content); // Must be raw string content
+  return new File(name, content); // `content` must be a string
 }
 
 export default {
