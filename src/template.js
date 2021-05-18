@@ -36,7 +36,7 @@ function createFile(props, children) {
 
   const { name } = props;
 
-  if (children.length != 1) {
+  if (children.length !== 1) {
     const msg = `File ${name} must have a single child element or string`;
     throw new RoutingError(msg);
   }
@@ -52,10 +52,10 @@ function createFile(props, children) {
 
 export default {
   createElement(type, props, ...children) {
-    if (type == Components.Dir) {
+    if (type === Components.Dir) {
       return createDir(props, children);
     }
-    if (type == Components.File) {
+    if (type === Components.File) {
       return createFile(props, children);
     }
     return React.createElement(type, props, ...children);
