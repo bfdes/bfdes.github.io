@@ -7,7 +7,7 @@ summary: Extending React's JSX API
 
 Facebook's JavaScript user interface library ReactJS has taken the world of frontend development [by storm](https://trends.google.com/trends/explore?date=2013-01-01%202021-01-01&q=%2Fm%2F012l1vxv) since its public introduction at [JSConf 2013](https://www.youtube.com/watch?v=GW0rj4sNH2w).
 
-Unlike the Model-View frameworks that preceded it, React drives UI updates by one-way data flow and declarative state management. Controversially, React introduced an XML-like syntax extension to JavaScript called [JSX](https://reactjs.org/docs/introducing-jsx.html) so that developers could combine markup syntax and render logic in application code.
+Unlike the Model-View frameworks that preceded it, React drives UI updates by declarative state management. Controversially, React introduced an XML-like syntax extension to JavaScript called [JSX](https://reactjs.org/docs/introducing-jsx.html) so that developers could combine markup syntax and render logic in application code.
 
 The idioms React promoted were not initially well-received, but they have gone on to become the norm.
 
@@ -111,7 +111,7 @@ const About = () => (
 
 ### Desugaring JSX
 
-React cannot be used without first preprocessing or transpiling JSX to plain JavaScript.
+Browsers and Node cannot understand JSX, so JSX must be transpiled to plain JavaScript before it can be run.
 
 During transpilation, build tools such as [Babel](https://babeljs.io/) and [esbuild](https://esbuild.github.io/) transform any JSX tags they encounter to calls to a JSX factory function. Historically, the factory was `React.createElement`, but build tools made the factory configurable using a pragma or transpiler directive to accommodate more frameworks that support JSX.
 
@@ -135,7 +135,7 @@ const Welcome = ({ name }) => React.createElement("div", null, "Hello, ", name);
 renderToStaticMarkup(React.createElement(Welcome, { name: "Mulder" }));
 ```
 
-by the first stage of a transpiler for React.
+by the first stage of a preprocessor or transpiler for React.
 
 From looking at how the factory function is invoked, we can learn about its expected signature:
 
@@ -151,7 +151,7 @@ We can exploit a user-customisable JSX transform and what we've seen of React's 
 
 ### The filesystem abstraction
 
-Observe that files and directories on disk can be modelled as trees where files form the terminal nodes. Any file or directory should be able to write its contents to disk then when given a root path.
+Observe that files and directories on disk can be modelled as trees where files form the terminal nodes. Any file or directory should be able to write its contents to disk when given a root path.
 
 `FileSystem` forms the notion of this interface for files and directories:
 
@@ -285,7 +285,7 @@ function createFile(props, children) {
   // Trivial input verification omitted
   const { name } = props;
 
-  if (children.length != 1) {
+  if (children.length !== 1) {
     const msg = `File ${name} must have a single child element or string`;
     throw new RoutingError(msg);
   }
