@@ -111,7 +111,7 @@ const About = () => (
 
 ### Desugaring JSX
 
-React cannot be used without first preprocessing or transpiling JSX to plain JavaScipt.
+React cannot be used without first preprocessing or transpiling JSX to plain JavaScript.
 
 During transpilation, build tools such as [Babel](https://babeljs.io/) and [esbuild](https://esbuild.github.io/) transform any JSX tags they encounter to calls to a JSX factory function. Historically, the factory was `React.createElement`, but build tools made the factory configurable using a pragma or transpiler directive to accommodate more frameworks that support JSX.
 
