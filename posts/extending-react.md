@@ -204,7 +204,7 @@ class Dir extends FileSystem {
       throw new FileWriteError(dirPath);
     }
     for (const fileOrDir of this.content) {
-      this.write(dirPath, fileOrDir); // recurse
+      fileOrDir.write(dirPath); // recurse
     }
   }
 }
