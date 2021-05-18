@@ -248,10 +248,10 @@ Our JSX transformer `createElement` should intercept any `File` or `Dir` stub re
 ```jsx
 const Template = {
   createElement(type, props, ...children) {
-    if (type == Dir) {
+    if (type === Dir) {
       return createDir(props, children);
     }
-    if (type == File) {
+    if (type === File) {
       return createFile(props, children);
     }
     return React.createElement(type, props, ...children);
