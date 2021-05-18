@@ -111,7 +111,7 @@ const About = () => (
 
 ### Desugaring JSX
 
-Browsers and Node cannot understand JSX, so JSX must be transpiled to plain JavaScript before it can be run.
+Browsers and Node cannot understand JSX, so it must be transpiled to plain JavaScript before use.
 
 During transpilation, build tools such as [Babel](https://babeljs.io/) and [esbuild](https://esbuild.github.io/) transform any JSX tags they encounter to calls to a JSX factory function. Historically, the factory was `React.createElement`, but build tools made the factory configurable using a pragma or transpiler directive to accommodate more frameworks that support JSX.
 
@@ -145,7 +145,7 @@ From looking at how the factory function is invoked, we can learn about its expe
 
 Also, note that the `React` object must be in scope wherever JSX is used.[^3]
 
-## Building the library
+## Writing the library
 
 We can exploit a user-customisable JSX transform and what we've seen of React's composition model to implement our API. The idea is simple: calls to `File` or `Dir` "components" should be intercepted and recast as instantiations of filesystem objects. These objects must know how to write their contents to disk recursively.
 
