@@ -111,7 +111,7 @@ So it looks like library consumers can quickly adapt the Monte Carlo variant of 
 
 It is generally very hard to get a free lunch.[^5] In this case, reusing code can lead to performance and memory usage issues.
 
-Consider what happens when search text contains lots of false-positive matches:
+Consider what happens when search text contains lots of false positive matches:
 
 1. Every false positive match creates an extra stack frame, potentially leading to high stack usage.
 2. Every false positive match results in the hash within `monte_carlo` being recomputed needlessly.
@@ -141,7 +141,7 @@ The library can support just the Monte Carlo implementation if it is not likely 
 
 ## Acknowledgements
 
-I want to thank those who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of the article, and [Scott Williams](https://scottw.co.uk) pointed out that it is, in fact, possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.
+I want to thank those who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of the article, and [Scott Williams](https://scottw.co.uk) pointed out that it is, in fact, possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^7]
 
 [^1]: More concretely, the result of a Monte Carlo algorithm may be incorrect with a _known_ probability.
 [^2]: In the worst-case scenario, the runtime is bounded by $$O(mn)$$, where $$m$$, $$n$$ are the lengths of the pattern and search text, respectively.
@@ -149,3 +149,4 @@ I want to thank those who reviewed the first draft of this blog post. [Adil Parv
 [^4]: The course [Algorithms, Part I](https://www.coursera.org/learn/algorithms-part1) does an excellent job in explaining how Rabin-Karp works.
 [^5]: Unless you work at Google :P
 [^6]: We can get away using recursion when working in a language that supports tail-call optimisation. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002).
+[^7]: For example, an absurd way of implementing `monte_carlo` given `las_vegas` is to return the correct index on every other invocation and a random one otherwise.
