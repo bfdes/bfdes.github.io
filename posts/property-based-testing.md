@@ -164,7 +164,7 @@ Language and machine constraints limit integer arrays of size `n` to `math.pow(2
 
 Note that, although it is not evident from the caller's perspective, the second argument of `Stream.fill` is evaluated [lazily](https://docs.scala-lang.org/tour/by-name-parameters.html), so every sample will be distinct.
 
-Using [ScalaTest](http://www.scalatest.org) as the test runner, the test-code ends up being quite lean:
+Using [ScalaTest](https://www.scalatest.org) as the test runner, the test-code ends up being quite lean:
 
 ```scala
 class SortingTest extends FlatSpec {
