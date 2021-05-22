@@ -14,7 +14,7 @@ const About = () => (
       </p>
       <p>
         I work at Disney Streaming Services in London. The views I express are
-        my own, and not those of my employer. And no, I can{"'"}t introduce you
+        my own and not those of my employer. And no, I can{"'"}t introduce you
         to <a href="https://google.com/search?q=baby+yoda">Baby Yoda</a>.
       </p>
       <p>

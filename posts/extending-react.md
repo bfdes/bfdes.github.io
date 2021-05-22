@@ -5,13 +5,13 @@ created: 2021-05-12
 summary: Extending React's JSX API
 ---
 
-Facebook's JavaScript user interface library ReactJS has taken the world of frontend development [by storm](https://trends.google.com/trends/explore?date=2013-01-01%202021-01-01&q=%2Fm%2F012l1vxv) since its public introduction at [JSConf 2013](https://www.youtube.com/watch?v=GW0rj4sNH2w).
+Facebook's JavaScript user interface library ReactJS has taken the world of frontend development [by storm](https://trends.google.com/trends/explore?date=2013-05-29%202021-01-01&q=%2Fm%2F012l1vxv) since its public introduction at [JSConf 2013](https://www.youtube.com/watch?v=GW0rj4sNH2w).
 
-Unlike the Model-View frameworks that preceded it, React drives UI updates by declarative state management. Controversially, React introduced an XML-like syntax extension to JavaScript called [JSX](https://reactjs.org/docs/introducing-jsx.html) so that developers could combine markup syntax and render logic in application code.
+Unlike the Model-View frameworks that preceded it, React drives UI updates by declarative state management. Controversially, React introduced an XML-like syntax extension to JavaScript called [JSX](https://reactjs.org/docs/introducing-jsx.html) so developers could combine markup syntax and render logic in application code.
 
 The idioms React promoted were not initially well-received, but they have gone on to become the norm.
 
-We are going to extend React's JSX API to create a small NodeJS library that can be used in scripts to build a static website through the declarative composition of `File` and `Dir` primitives.
+We will extend React's JSX API to create a small NodeJS library that can be used in scripts to build a static website through the declarative composition of `File` and `Dir` primitives.
 
 For example, part of this blog can be described by the following static router:
 
@@ -140,7 +140,7 @@ by the first stage of a preprocessor or transpiler for React.
 From looking at how the factory function is invoked, we can learn about its expected signature:
 
 - First parameter: JSX element type. A string for lowercase types, a reference for uppercase ones.[^2]
-- Second parameter: An object keyed by props being passed to the element.
+- Second parameter: An object keyed by props passed to the element.
 - The rest of the parameters are populated with transformed child elements.
 
 Also, note that the `React` object must be in scope wherever JSX is used.[^3]
@@ -151,7 +151,7 @@ We can exploit a user-customisable JSX transform and what we've seen of React's 
 
 ### The filesystem abstraction
 
-Observe that files and directories on disk can be modelled as trees where files form the terminal nodes. Any file or directory should be able to write its contents to disk when given a root path.
+Observe that we can model files and directories on disk as trees where files form the terminal nodes. Any file or directory should be able to write its contents to disk when given a root path.
 
 `FileSystem` forms the notion of this interface for files and directories:
 

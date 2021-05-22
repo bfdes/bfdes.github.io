@@ -105,7 +105,7 @@ def las_vegas(pattern):
   return search
 ```
 
-So it looks like library consumers can quickly adapt the Monte Carlo variant of the algorithm to create the Las Vegas form if they need to.
+So it looks like library consumers can quickly adapt the Monte Carlo variant of the algorithm to create the Las Vegas form if needed.
 
 ## Engineering tradeoffs
 
@@ -116,7 +116,7 @@ Consider what happens when search text contains lots of false positive matches:
 1. Every false positive match creates an extra stack frame, potentially leading to high stack usage.
 2. Every false positive match results in the hash within `monte_carlo` being recomputed needlessly.
 
-The first problem can be dealt with by simply rewriting `las_vegas` in an iterative fashion:[^6]
+We can deal with the first problem can by simply rewriting `las_vegas` in an iterative fashion:[^6]
 
 ```python
 def las_vegas(pattern):
@@ -137,16 +137,16 @@ def las_vegas(pattern):
 
 We can only solve the second problem by writing the implementation from scratch.
 
-The library can support just the Monte Carlo implementation if it is not likely to be used in situations where false positive matches are unacceptable. Unfortunately, generally speaking, library authors cannot be sure that developers won't use their code in pathological cases.
+The library can support just the Monte Carlo implementation if it is not likely to be used when false positive matches are unacceptable. Unfortunately, generally speaking, library authors cannot be sure that developers won't use their code in pathological cases.
 
 ## Acknowledgements
 
 I want to thank those who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of the article, and [Scott Williams](https://scottw.co.uk) pointed out that it is, in fact, possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^7]
 
-[^1]: More concretely, the result of a Monte Carlo algorithm may be incorrect with a _known_ probability.
-[^2]: In the worst-case scenario, the runtime is bounded by $$O(mn)$$, where $$m$$, $$n$$ are the lengths of the pattern and search text, respectively.
+[^1]: More precisely, the result of a Monte Carlo algorithm may be incorrect with a _known_ probability.
+[^2]: In the worst-case scenario, the runtime is bounded by $$O(mn)$$, where $$m$$, $$n$$ are the pattern and search text lengths, respectively.
 [^3]: This API is the best for Rabin Karp because it enables a small optimisation: the user can "share" the work of the initial pattern hash across multiple searches for the same pattern.
-[^4]: The course [Algorithms, Part I](https://www.coursera.org/learn/algorithms-part1) does an excellent job in explaining how Rabin-Karp works.
+[^4]: The course [Algorithms I](https://www.coursera.org/learn/algorithms-part1) does an excellent job in explaining how Rabin-Karp works.
 [^5]: Unless you work at Google :P
 [^6]: We can get away using recursion when working in a language that supports tail-call optimisation. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002).
 [^7]: For example, an absurd way of implementing `monte_carlo` given `las_vegas` is to return the correct index on every other invocation and a random one otherwise.
