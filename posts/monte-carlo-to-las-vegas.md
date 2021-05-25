@@ -23,7 +23,7 @@ The naïve or brute force algorithm loops through every character of search text
 
 We can do much better by using something like Rabin-Karp search.
 
-Suppose our library exposes substring search algorithms as curried functions `f`:
+Suppose our library exposes substring search algorithms as curried functions:
 
 $$
 f : p \mapsto t \mapsto i,
@@ -40,7 +40,7 @@ Example usage in Python:
 -1
 ```
 
-The goal is to enable the client to write the Las Vegas variant of Rabin Karp in terms of the Monte Carlo variant `f` so that the library only has to export one implementation.
+The goal is to enable the client to write the Las Vegas variant of Rabin Karp `las_vegas` in terms of the Monte Carlo variant `monte_carlo` so that the library only has to export one implementation.
 
 ## Rabin-Karp
 
@@ -141,7 +141,7 @@ The library can support just the Monte Carlo implementation if it is not likely 
 
 ## Acknowledgements
 
-I want to thank those who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of the article, and [Scott Williams](https://scottw.co.uk) pointed out that it is, in fact, possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^7]
+I want to thank the people who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of the article, and [Scott Williams](https://scottw.co.uk) pointed out that it is, in fact, possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^7]
 
 [^1]: More precisely, the result of a Monte Carlo algorithm may be incorrect with a _known_ probability.
 [^2]: In the worst-case scenario, the runtime is bounded by $$O(mn)$$, where $$m$$, $$n$$ are the pattern and search text lengths, respectively.
