@@ -174,7 +174,7 @@ We have everything we need to test `mergeSort` works (for integer arrays):
 import Histogram
 import Sorting._
 
-object SortingSpec extends Properties("mergeSort") {
+object SortingSpecification extends Properties("mergeSort") {
   val array: Gen[Array[Int]] =
     Gen.containerOf[Array, Int](Gen.posNum[Int])
 
