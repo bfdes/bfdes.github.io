@@ -17,19 +17,13 @@ It is possible to formulate a Las Vegas variant of an algorithm from the Monte C
 
 ## Substring search
 
-Substring search algorithms let us find the position of a substring `p` within a larger piece of text `t`.
-
-The naïve or brute force algorithm loops through every character of search text and attempts to match the search string against the next `len(p)` characters encountered. It performs poorly for large input.[^2]
-
-We can do much better by using something like Rabin-Karp search.
-
-Suppose our library exposes substring search algorithms as [curried functions](https://en.wikipedia.org/wiki/Currying):
+Substring search algorithms let us find the position of a search string or pattern `p` within a larger piece of text `t`. Suppose our library exposes them as [curried functions](https://en.wikipedia.org/wiki/Currying)
 
 $$
 f : p \mapsto t \mapsto i,
 $$
 
-where $i \in I$ if the substring is found, and $i = -1$ otherwise.[^3]
+where $i \in I$ if the search string appears as a substring in the text, and $i = -1$ otherwise.[^2]
 
 Example usage in Python:
 
@@ -40,11 +34,29 @@ Example usage in Python:
 -1
 ```
 
-The goal is to enable the client to write the Las Vegas variant of Rabin Karp in terms of the Monte Carlo variant so that the library only has to export one implementation.
+The naïve or brute force algorithm loops through every character of search text and attempts to match the search string against the next `len(p)` characters encountered:
+
+```python
+def find(pattern):
+  m = len(pattern)
+
+  def search(text):
+    n = len(text)
+    for i in range(0, n):
+      if(pattern == text[i:i+m]):
+        return i
+    return -1
+
+  return search
+```
+
+It performs poorly for large text input.[^3] We can do much better by using something like Rabin-Karp search.[^4]
+
+Our goal is to enable the client to write the Las Vegas variant of Rabin Karp in terms of the Monte Carlo variant so that the library only has to export one implementation.
 
 ## Rabin-Karp
 
-The Rabin Karp algorithm attempts to find the search string by computing a rolling hash of successive substrings in the search text.[^4] The Monte Carlo variant returns the index that defines the first substring with a hash matching that of the pattern -- if one exists. Note that a hash collision can result in a false positive match.
+The Rabin Karp algorithm attempts to find the search string by computing a rolling hash of successive substrings in the search text.[^5] The Monte Carlo variant returns the index that defines the first substring with a hash matching that of the pattern -- if one exists. Note that a hash collision can result in a false positive match.
 
 Looking at code will make the idea clear. Here is a Python implementation of Rabin Karp:
 
@@ -89,7 +101,7 @@ def find(pattern):
   return search
 ```
 
-The Las Vegas variant additionally performs an equality check to verify that the substrings `pattern` and `text[i-m:i]` are the same before returning from the search loop. But this is equivalent to modifying the Monte Carlo variant to call itself on the remaining portion of text if an equality check fails, viz:
+The Las Vegas variant additionally performs an equality check to verify that the strings `pattern` and `text[i-m:i]` are the same before returning from the search loop. But this is equivalent to modifying the Monte Carlo variant to call itself on the remaining portion of text if an equality check fails, viz:
 
 ```python
 import rabin_karp
@@ -112,14 +124,14 @@ So it looks like library consumers can quickly adapt the Monte Carlo variant of 
 
 ## Engineering tradeoffs
 
-It is generally very hard to get a free lunch.[^5] In this case, reusing code can lead to performance and memory usage issues when search text contains **lots** of false-positive matches.
+It is generally very hard to get a free lunch.[^6] In this case, reusing code can lead to performance and memory usage issues when search text contains **lots** of false-positive matches.
 
-Each false positive match encountered when `find`
+Each false positive match encountered when `find` executes
 
 1. creates an extra stack frame, and
 2. results in the hash within `rabin_karp.find` being recomputed.
 
-We can deal with the first problem by simply rewriting `find` in an iterative fashion:[^6]
+We can deal with the first problem by simply rewriting `find` in an iterative fashion:[^7]
 
 ```python
 import rabin_karp
@@ -146,12 +158,25 @@ The library can support just the Monte Carlo implementation if it is not likely 
 
 ## Acknowledgements
 
-I want to thank the people who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of the article, and [Scott Williams](https://scottw.co.uk) pointed out that it is, in fact, _always_ possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^7]
+I want to thank the people who reviewed the first draft of this blog post. [Adil Parvez](https://adilparvez.com) helped me define the tone of the article, and [Scott Williams](https://scottw.co.uk) pointed out that it is, in fact, _always_ possible to go from a Las Vegas variant of an algorithm to a Monte Carlo variant.[^8]
 
 [^1]: More precisely, the result of a Monte Carlo algorithm may be incorrect with a _known_ probability.
-[^2]: In the worst-case scenario, the runtime is bounded by $$O(mn)$$, where $$m$$, $$n$$ are the pattern and search text lengths, respectively.
-[^3]: This API is the best for Rabin Karp because it enables a small optimization: the user can [memoize](https://en.wikipedia.org/wiki/Memoization) the work of the initial pattern hash across multiple searches for the same pattern.
-[^4]: The course [Algorithms I](https://www.coursera.org/learn/algorithms-part1) does an excellent job in explaining how Rabin-Karp works.
-[^5]: Unless you work at Google :P
-[^6]: We can get away using recursion when working in a language that supports tail-call optimization. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002).
-[^7]: For example, an absurd way of implementing a Monte Carlo algorithm given a Las Vegas variant is to return the correct index on every other invocation and a random one otherwise.
+[^2]:
+    This API is the best for Rabin Karp because it enables a _small_ optimization: the user can choose to [memoize](https://en.wikipedia.org/wiki/Memoization) the search string hash. For example, in
+
+    ```python
+    >>> search = find("needle")
+    >>> search("It's like looking for a needle in a haystack")
+    24
+    >>> search("It's like a wild goose chase")
+    -1
+    ```
+
+    `"needle"` has only been hashed once.
+
+[^3]: In the worst-case scenario, the runtime is bounded by $$O(mn)$$, where $$m$$, $$n$$ are the pattern and search text lengths, respectively.
+[^4]: Boyer-Moore and Knuth-Morris-Pratt search algorithms are also effective alternatives.
+[^5]: The course [Algorithms I](https://www.coursera.org/learn/algorithms-part1) does an excellent job in explaining how Rabin-Karp works.
+[^6]: Unless you work at Google :P
+[^7]: We can get away using recursion when working in a language that supports tail-call optimization. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002).
+[^8]: For example, an absurd way of implementing a Monte Carlo algorithm given a Las Vegas variant is to return the correct index on every other invocation and a random one otherwise.
