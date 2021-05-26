@@ -75,7 +75,7 @@ $$
 \left(a_i \mid i \in I \right) = \left(a'_i \mid i \in I \right)
 $$
 
-2. It must order its input to form its output according to a [total order](https://mathworld.wolfram.com/TotallyOrderedSet.html)
+2. It must order its input to form its output according to a [total order](https://en.wikipedia.org/wiki/Total_order)
 
 $$
 a'_i \leq a'_j \space \forall \space i, j \in \{i, j \in I \mid i < j\}
