@@ -282,18 +282,6 @@ tbody tr:nth-child(odd) th {
   }
 }
 
-/* Spinner */
-.spinner {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.spinner img {
-  width: 5rem;
-  height: 5rem;
-}
-
 /* Posts */
 #posts {
   padding: 0;
