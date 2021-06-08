@@ -137,7 +137,7 @@ renderToStaticMarkup(React.createElement(Welcome, { name: "Mulder" }));
 
 by the first stage of a preprocessor or transpiler for React.
 
-From looking at how `React.createElement` is invoked, we can learn about the expected signature for the factory function:
+From looking at how the factory function is invoked, we can learn about its expected signature:
 
 - First parameter: JSX element type. A string for lowercase types, a reference for uppercase ones.[^2]
 - Second parameter: An object keyed by props passed to the element.
@@ -307,30 +307,19 @@ However, there are a couple of improvements that we can make:
 1. `createElement` should prevent children from being passed as `props.children`.
 2. `FileSystem.write` implementations should use the promise-based Node filesystem API.
 
-Passing children directly through props is discouraged.[^5] It leads to quirks when children are _also_ passed through composition, as the transpiler discards `props.children` when calling the JSX factory.
-
-We can add the following block to `createDir` and `createFile` to prevent developers from passing children directly to `Dir` or `File`:
+The ESLint React plugin regards passing children directly through props as [a bad practice](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-children-prop.md). It leads to quirks when children are _also_ passed through composition, as the transpiler discards `props.children` when calling the JSX factory. The best we can do is warn the user:
 
 ```js
+// In createDir, createFile
 if (props.children) {
   const msg = `Contents of ${name} must be passed as nested children`;
   throw new RoutingError(msg); // Why would anyone do this?
 }
 ```
 
-Code like
+Asynchronously reading and writing files is more efficient than doing it synchronously, but the difference is only noticeable when running a program on a busy webserver. Using a script to build a website only taxes a machine briefly.
 
-```jsx
-<File name="about.html" children={<About />} /> // Not OK
-```
-
-will throw when executed.
-
-Using callback or promise-based Node APIs to write directories and files asynchronously means we can ask the operating system to try writing all the children of a directory at once. Currently, we wait for one child to be written before we start writing the next one.[^6]
-
-[^1]: Before the introduction of [React Hooks](https://reactjs.org/docs/hooks-intro.html) in React 16.8, class and function components served different purposes. Now that function components can also manipulate React state through hooks, class components are somewhat redundant.
+[^1]: Before the introduction of [React Hooks](https://reactjs.org/docs/hooks-intro.html) in React 16.8, class and function components served different purposes. Now that function components can also manipulate internal state through hooks, class components are somewhat redundant.
 [^2]: In practice, this means that user-defined React components must be named with a capital letter or be assigned to a capitalised variable before use.
 [^3]: Since the release of React 17, many transpilers [can "automatically import" React](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html).
 [^4]: Fragments allow components to return multiple elements without adding extra nodes to the DOM.
-[^5]: This bad practice can be identified during linting; by default, the ESLint React plugin [stops](https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-children-prop.md) children from being passed directly through props.
-[^6]: Building a website from a script only taxes a machine briefly anyway, so the difference in runtime shouldn't be noticeable.
