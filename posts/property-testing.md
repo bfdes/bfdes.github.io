@@ -5,7 +5,7 @@ created: 2018-10-15
 summary: An introduction to property-based testing and its applications in standard library algorithm validation
 ---
 
-Property testing is a valuable tool for verifying the correctness of complex programs and libraries. It involves providing a set of properties that state or functions should obey. Effectively, the developer writes a specification for their work.
+Property testing is a valueable tool for verifying the correctness of complex programs and libraries. It involves providing a set of properties that state or functions should obey. Effectively, the developer writes a specification for their work.
 
 Properties are usually defined with the aid of a property testing library, like Haskell's QuickCheck.[^1] These libraries also enable users to generate sample data using generators to drive properties during test execution.
 
@@ -51,13 +51,13 @@ List(
 }
 ```
 
-to the simple property definition we saw before, which checks many more cases.[^5]
+to the terse property definition we saw before, which checks many more cases.[^5]
 
 ScalaCheck can generate exhaustive test cases for functions with a finite domain. For functions with an infinitely sized domain, such as the sorting function we are going to look at, we should write generators that obtain a representative sample.[^6]
 
 Even when the domain is finite, sometimes we limit generators to sample from a subset so that tests do not take too long to run.
 
-Assertion-based tests are better at documenting edge case behaviour, or ensuring that tests always run for edge case input. For JSON parsing, edge case input could include empty strings, arrays or objects:
+Assertion-based tests are better at documenting edge case behaviour, or ensuring that tests always run for edge case input. For JSON parsing, edge case inputs could include empty strings, arrays or objects:
 
 ```scala
 assert(Json.encode(Json.decode("")) == Json.str(""))
@@ -113,7 +113,7 @@ class Histogram[K](keys: Seq[K]) {
 
 # Mergesort
 
-The [gist](https://gist.github.com/bfdes/88f3292aa2d23e619714bee4221799d8) contains an implementation of mergesort transcribed to Scala from [Algorithms I](https://www.coursera.org/learn/algorithms-part1).
+The gist contains an implementation of mergesort transcribed to Scala from [Algorithms I](https://www.coursera.org/learn/algorithms-part1).
 
 Mergesort is a divide-and-conquer algorithm; it consists of two subroutines:
 
@@ -131,7 +131,7 @@ To use ScalaCheck, we need to be aware of two abstract data types it exports:
 
 ## Writing generators
 
-It is impossible to create generators for the infinite number of input types that generic functions like `mergeSort[T]` accept, so we have to limit ourselves to a handful. For the sake of simplicity, let's constrain the test suite even further and only test positive integer array input.
+It is impossible to create generators for the infinite number of input types that generic algorithms like `mergeSort[T]` accept, so we have to limit ourselves to a handful. For the sake of simplicity, let's constrain the test suite even further and only test positive integer array input.
 
 We can use the combinators ScalaCheck provides to quickly write a generator for integer arrays:
 
@@ -220,4 +220,4 @@ If you want more insight into how ScalaCheck works, take a look at the book [Fun
     case class User(name: String, height: Double, age: Int)
     ```
 
-    Ordering users by age and then reordering them by height should _always_ have the same result as ordering users by height and breaking ties on age.
+    Ordering users by age and then reordering them by height should always have the same result as ordering users by height and breaking ties on age.
