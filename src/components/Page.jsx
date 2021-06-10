@@ -34,11 +34,6 @@ const Body = ({ children }) => (
       <Sidebar />
       <div id="content">{children}</div>
     </div>
-    <script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon='{"token": "59848ead64c247eeacf752262649cb23"}'
-    ></script>
   </body>
 );
 
