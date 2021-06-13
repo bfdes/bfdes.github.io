@@ -12,6 +12,7 @@ export default function Router(repo) {
 
   return (
     <Dir name="site">
+      <File name="CNAME">{"bfdes.in"}</File>
       <File name="about.html">
         <About />
       </File>
