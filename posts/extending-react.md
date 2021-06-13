@@ -9,7 +9,7 @@ Facebook's JavaScript user interface library ReactJS has taken the world of fron
 
 Unlike the Model-View frameworks that preceded it, React drives UI updates by declarative state management. Controversially, React introduced an XML-like syntax extension to JavaScript called [JSX](https://reactjs.org/docs/introducing-jsx.html) so developers could combine markup syntax and render logic in application code.
 
-The idioms React promoted were not initially well-received, but they have gone on to become the norm.
+The idioms React promoted were not initially well-received, but they have gone on to become popular.
 
 We will extend React's JSX API to create a small NodeJS library that can be used in scripts to build a static website through the declarative composition of `File` and `Dir` primitives.
 
@@ -42,6 +42,8 @@ site
 ```
 
 in the directory where `write` was invoked.
+
+In this way, anyone can roll their own React-based static site generator like [Gatsby](https://www.gatsbyjs.com/).
 
 ## Understanding React
 
