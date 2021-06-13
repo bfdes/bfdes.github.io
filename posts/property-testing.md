@@ -7,7 +7,7 @@ summary: An introduction to property-based testing and its applications in stand
 
 Property testing is a valuable tool for verifying the correctness of complex programs and libraries. It involves providing a set of properties that state or functions should obey. Effectively, the developer writes a specification for their work.
 
-Properties are usually defined with the aid of a property testing library, like Haskell's QuickCheck.[^1] These libraries also enable users to generate sample data using generators to drive properties during test execution.
+Properties are usually defined with the aid of a property testing library, like Haskell's QuickCheck.[^1] These libraries also enable users to generate sample data to drive properties during test execution.
 
 For example, a roundtrip property can verify that a JSON parser is consistent. In Scala, with [ScalaCheck](https://www.scalacheck.org/), this looks like
 
