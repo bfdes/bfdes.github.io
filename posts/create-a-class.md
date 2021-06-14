@@ -257,13 +257,13 @@ public class Loadout {
     }
     if (!slot.availableAttachments().contains(attachment)) {
       throw new IllegalArgumentException();
-    }
+    }  // 1
     if (isFull()) {
       throw new UnsupportedOperationException();
-    }
+    }  // 2
     if (containsAttachment(slot)) {
       throw new UnsupportedOperationException();
-    }
+    }  // 3
     attachments.put(slot, attachment);
   }
 }
