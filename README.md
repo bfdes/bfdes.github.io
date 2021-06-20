@@ -1,7 +1,7 @@
 # bfdes.in
 
-![GitHub Actions](https://github.com/bfdes/bfdes.in/workflows/Test/badge.svg)
-[![Codecov](https://codecov.io/gh/bfdes/bfdes.in/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.in)
+![GitHub Actions](https://github.com/bfdes/bfdes.github.io/workflows/Test/badge.svg)
+[![Codecov](https://codecov.io/gh/bfdes/bfdes.in/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.github.io)
 
 Source for my personal blog.
 
@@ -19,7 +19,7 @@ yarn install
 # Installs all dependencies
 
 yarn build:project
-# Builds the static site generator, and puts it in ssg.js
+# Builds the static site generator, and puts it in build.js
 
 yarn build:site
 # Builds the website itself, and puts it in site/
@@ -74,7 +74,7 @@ yarn test
 
 ## Deployment
 
-The output of `yarn build` can be
+The output of `yarn build:site` can be
 
 1. served by a webserver such as [NGINX](https://www.nginx.com/), or
 2. hosted by a platform like [GitHub Pages](https://pages.github.com/).
