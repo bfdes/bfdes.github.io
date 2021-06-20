@@ -19,7 +19,7 @@ const About = () => (
       </p>
       <p>
         You can find the source code for this website on{" "}
-        <a href="https://github.com/bfdes/bfdes.in">GitHub</a>.
+        <a href="https://github.com/bfdes/bfdes.github.io">GitHub</a>.
       </p>
     </div>
   </Page>
