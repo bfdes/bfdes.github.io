@@ -5,49 +5,51 @@ import FileWriter, { FileWriteError } from "src/fileWriter";
 describe("FileWriter", () => {
   const rootPath = "/Users/johndoe/Documents";
 
-  it("writes file contents", () => {
+  it("writes file contents", async () => {
     const fileName = "hello-world.txt";
     const fileContents = "Hello, World!";
     const stubFs = {
-      writeFileSync: jest.fn(),
+      writeFile: jest.fn(),
     };
     const fileWriter = new FileWriter(stubFs);
     const file = mk(fileName, fileContents);
-    fileWriter.write(rootPath, file);
+    await fileWriter.write(rootPath, file);
 
-    expect(stubFs.writeFileSync).toHaveBeenCalledTimes(1);
+    expect(stubFs.writeFile).toHaveBeenCalledTimes(1);
   });
 
-  it("writes images in binary format", () => {
+  it("writes images in binary format", async () => {
     const fileName = "avatar.jpg";
     const fileContents = "binary string";
     const stubFs = {
-      writeFileSync: jest.fn(),
+      writeFile: jest.fn(),
     };
     const fileWriter = new FileWriter(stubFs);
     const file = mk(fileName, fileContents);
-    fileWriter.write(rootPath, file);
+    await fileWriter.write(rootPath, file);
 
-    expect(stubFs.writeFileSync).toHaveBeenCalledTimes(1);
-    expect(stubFs.writeFileSync).toHaveBeenCalledWith(
+    expect(stubFs.writeFile).toHaveBeenCalledTimes(1);
+    expect(stubFs.writeFile).toHaveBeenCalledWith(
       path.join(rootPath, fileName),
       fileContents,
       "binary"
     );
   });
 
-  it("handles write errors", () => {
+  it("handles write errors", async () => {
     const fileName = "hello-world.txt";
     const fileContents = "Hello, World!";
     const stubFs = {
-      writeFileSync() {
+      writeFile() {
         throw new Error();
       },
     };
     const fileWriter = new FileWriter(stubFs);
     const file = mk(fileName, fileContents);
 
-    expect(() => fileWriter.write(rootPath, file)).toThrow(FileWriteError);
+    await expect(fileWriter.write(rootPath, file)).rejects.toThrow(
+      FileWriteError
+    );
   });
 });
 
@@ -57,41 +59,45 @@ describe("DirWriter", () => {
   const fileName = "index.txt";
   const fileContents = "Hello, World!";
 
-  it("writes directory contents", () => {
+  it("writes directory contents", async () => {
     const stubFs = {
-      mkdirSync: jest.fn(),
-      writeFileSync: jest.fn(),
+      mkdir: jest.fn(),
+      writeFile: jest.fn(),
     };
     const dirWriter = new FileWriter(stubFs);
     const dir = mk(dirName, [mk(fileName, fileContents)]);
-    dirWriter.write(rootPath, dir);
+    await dirWriter.write(rootPath, dir);
 
-    expect(stubFs.mkdirSync).toHaveBeenCalledTimes(1);
-    expect(stubFs.writeFileSync).toHaveBeenCalledTimes(1);
+    expect(stubFs.mkdir).toHaveBeenCalledTimes(1);
+    expect(stubFs.writeFile).toHaveBeenCalledTimes(1);
   });
 
-  it("handles directory write errors", () => {
+  it("handles directory write errors", async () => {
     const stubFs = {
-      mkdirSync() {
+      mkdir() {
         throw new Error();
       },
     };
     const dirWriter = new FileWriter(stubFs);
     const dir = mk(dirName, [mk(fileName, fileContents)]);
 
-    expect(() => dirWriter.write(rootPath, dir)).toThrow(FileWriteError);
+    await expect(dirWriter.write(rootPath, dir)).rejects.toThrow(
+      FileWriteError
+    );
   });
 
-  it("handles file write errors", () => {
+  it("handles file write errors", async () => {
     const stubFs = {
-      mkdirSync: jest.fn(),
-      writeFileSync() {
+      mkdir: jest.fn(),
+      writeFile() {
         throw new Error();
       },
     };
     const dirWriter = new FileWriter(stubFs);
     const dir = mk(dirName, [mk(fileName, fileContents)]);
 
-    expect(() => dirWriter.write(rootPath, dir)).toThrow(FileWriteError);
+    await expect(dirWriter.write(rootPath, dir)).rejects.toThrow(
+      FileWriteError
+    );
   });
 });

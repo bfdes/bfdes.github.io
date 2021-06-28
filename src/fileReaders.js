@@ -12,7 +12,7 @@ export class FileReadError extends Error {
 }
 
 class Reader {
-  read() {
+  async read() {
     throw new NotImplementedError();
   }
 }
@@ -23,9 +23,10 @@ export class FileReader extends Reader {
     this.fs = fs;
   }
 
-  read(filePath) {
+  async read(filePath) {
     try {
-      return this.fs.readFileSync(filePath);
+      const file = await this.fs.readFile(filePath);
+      return file;
     } catch (_) {
       throw new FileReadError(filePath);
     }
@@ -38,11 +39,10 @@ export class DirReader extends Reader {
     this.fs = fs;
   }
 
-  read(dirPath) {
+  async read(dirPath) {
     try {
-      return this.fs
-        .readdirSync(dirPath)
-        .map((fileName) => path.join(dirPath, fileName));
+      const children = await this.fs.readdir(dirPath);
+      return children.map((fileName) => path.join(dirPath, fileName));
     } catch (_) {
       throw new FileReadError(dirPath);
     }
@@ -56,12 +56,13 @@ export class RepoReader extends Reader {
     this.dirReader = new DirReader(fs);
   }
 
-  read(dirPath) {
-    const posts = this.dirReader
-      .read(dirPath)
+  async read(dirPath) {
+    const children = await this.dirReader.read(dirPath);
+    const promises = children
       .filter((filePath) => path.extname(filePath) == ".md")
-      .map((filePath) => this.fileReader.read(filePath))
-      .map((fileContent) => md.parse(fileContent));
+      .map((filePath) => this.fileReader.read(filePath));
+    const fileContents = await Promise.all(promises);
+    const posts = fileContents.map(md.parse);
     return new Repo(posts);
   }
 }

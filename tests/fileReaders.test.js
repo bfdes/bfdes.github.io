@@ -9,10 +9,10 @@ import { MissingMetadataError } from "src/md";
 import Repo from "src/repo";
 
 describe("FileReader", () => {
-  it("resolves files by path", () => {
+  it("resolves files by path", async () => {
     const fileContents = `console.log("Hello, World!")`;
     const stubFs = {
-      readFileSync(filePath) {
+      async readFile(filePath) {
         if (filePath === "helloWorld.js") {
           return fileContents;
         }
@@ -21,26 +21,28 @@ describe("FileReader", () => {
     };
     const fileReader = new FileReader(stubFs);
 
-    expect(fileReader.read("helloWorld.js")).toBe(fileContents);
+    await expect(fileReader.read("helloWorld.js")).resolves.toBe(fileContents);
   });
 
-  it("fails when file is missing", () => {
+  it("fails when file is missing", async () => {
     const stubFs = {
-      readFileSync() {
+      async readFile() {
         throw new Error();
       },
     };
     const moduleReader = new FileReader(stubFs);
 
-    expect(() => moduleReader.read("helloWorld.js")).toThrow(FileReadError);
+    await expect(moduleReader.read("helloWorld.js")).rejects.toThrow(
+      FileReadError
+    );
   });
 });
 
 describe("DirReader", () => {
-  it("resolves directories by path", () => {
+  it("resolves directories by path", async () => {
     const fileNames = ["my-first-post.md", "my-second-post.md"];
     const stubFs = {
-      readdirSync(dirPath) {
+      async readdir(dirPath) {
         if (dirPath == "posts") {
           return fileNames;
         }
@@ -50,25 +52,25 @@ describe("DirReader", () => {
     const dirReader = new DirReader(stubFs);
     const filePaths = fileNames.map((name) => path.join("posts", name));
 
-    expect(new Set(dirReader.read("posts"))).toEqual(new Set(filePaths));
+    await expect(dirReader.read("posts")).resolves.toEqual(filePaths);
   });
 
-  it("fails when directory is missing", () => {
+  it("fails when directory is missing", async () => {
     const stubFs = {
-      readdirSync() {
+      async readdir() {
         throw new Error();
       },
     };
     const dirReader = new DirReader(stubFs);
 
-    expect(() => dirReader.read("posts")).toThrow(FileReadError);
+    await expect(dirReader.read("posts")).rejects.toThrow(FileReadError);
   });
 });
 
 describe("RepoReader", () => {
-  it("resolves posts", () => {
+  it("resolves posts", async () => {
     const stubFs = {
-      readFileSync(filePath) {
+      async readFile(filePath) {
         if (filePath == path.join("posts", "my-first-post.md")) {
           return [
             "---",
@@ -95,7 +97,7 @@ describe("RepoReader", () => {
         }
         throw new Error();
       },
-      readdirSync(dirPath) {
+      async readdir(dirPath) {
         if (dirPath == "posts") {
           return ["my-first-post.md", "my-second-post.md"];
         }
@@ -103,19 +105,19 @@ describe("RepoReader", () => {
       },
     };
     const repoReader = new RepoReader(stubFs);
-    const repo = repoReader.read("posts");
+    const repo = await repoReader.read("posts");
 
     expect(repo).toBeInstanceOf(Repo);
     expect(repo.posts).toHaveLength(2);
     expect(repo.tags).toEqual(new Set(["Python", "API", "Testing"]));
   });
 
-  it("only reads markdown files", () => {
+  it("only reads markdown files", async () => {
     const stubFs = {
-      readFileSync() {
+      async readFile() {
         throw new Error();
       },
-      readdirSync(dirPath) {
+      async readdir(dirPath) {
         if (dirPath == "posts") {
           return ["my-first-post.txt"];
         }
@@ -123,26 +125,26 @@ describe("RepoReader", () => {
       },
     };
     const repoReader = new RepoReader(stubFs);
-    const repo = repoReader.read("posts");
+    const repo = await repoReader.read("posts");
 
     expect(repo).toBeInstanceOf(Repo);
     expect(repo.posts).toHaveLength(0);
   });
 
-  it("fails when posts are missing", () => {
+  it("fails when posts are missing", async () => {
     const stubFs = {
-      readdirSync() {
+      async readdir() {
         throw new Error();
       },
     };
     const repoReader = new RepoReader(stubFs);
 
-    expect(() => repoReader.read("posts")).toThrow(FileReadError);
+    await expect(repoReader.read("posts")).rejects.toThrow(FileReadError);
   });
 
-  it("fails when a post cannot be parsed", () => {
+  it("fails when a post cannot be parsed", async () => {
     const stubFs = {
-      readFileSync(filePath) {
+      async readFile(filePath) {
         if (filePath == path.join("posts", "my-first-post.md")) {
           return [
             "---",
@@ -153,7 +155,7 @@ describe("RepoReader", () => {
         }
         throw new Error();
       },
-      readdirSync(dirPath) {
+      async readdir(dirPath) {
         if (dirPath == "posts") {
           return ["my-first-post.md"];
         }
@@ -162,6 +164,8 @@ describe("RepoReader", () => {
     };
     const repoReader = new RepoReader(stubFs);
 
-    expect(() => repoReader.read("posts")).toThrow(MissingMetadataError);
+    await expect(repoReader.read("posts")).rejects.toThrow(
+      MissingMetadataError
+    );
   });
 });
