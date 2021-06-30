@@ -9,13 +9,53 @@ import remarkRehype from "remark-rehype";
 import unified from "unified";
 import { VFile } from "vfile";
 import { matter } from "vfile-matter";
+import isString from "./isString";
 import slugify from "./slugify";
-import {
-  SummaryValidator,
-  TagValidator,
-  TimestampValidator,
-  TitleValidator,
-} from "./validators";
+
+const schema = {
+  title: isString,
+  summary: isString,
+  tags: (value) => Array.isArray(value) && value.every(isString),
+  created: (value) => value instanceof Date, // Good enough for use-case
+};
+
+export class MissingMetadataError extends Error {
+  constructor(...args) {
+    const msg = "Markup is missing metadata";
+    super(msg, ...args);
+  }
+}
+
+export class MissingMetadataKeysError extends Error {
+  constructor(keys, ...args) {
+    const msg = `Metadata keys ${keys.join(", ")} could not be found`;
+    super(msg, ...args);
+  }
+}
+
+export class MetadataParseError extends Error {
+  constructor(keys, ...args) {
+    const msg = `Metadata keys ${keys.join(", ")} could not be parsed`;
+    super(msg, ...args);
+  }
+}
+
+function validate(meta) {
+  if (meta === "undefined") {
+    throw new MissingMetadataError();
+  }
+  const schemaKeys = Object.keys(schema);
+
+  const missingKeys = schemaKeys.filter((key) => !(key in meta));
+  if (missingKeys.length) {
+    throw new MissingMetadataKeysError(missingKeys);
+  }
+
+  const malformedKeys = schemaKeys.filter((key) => !schema[key](meta[key]));
+  if (malformedKeys.length) {
+    throw new MetadataParseError(malformedKeys);
+  }
+} // Adapted from https://stackoverflow.com/a/38616988
 
 // Markdown AST -> word count compiler
 function retextCount() {
@@ -31,27 +71,6 @@ function retextCount() {
   }
 }
 
-export class MissingMetadataError extends Error {
-  constructor(...args) {
-    const msg = "Markup is missing metadata";
-    super(msg, ...args);
-  }
-}
-
-export class MetadataParseError extends Error {
-  constructor(fieldName, ...args) {
-    const msg = `Metadata field ${fieldName} could not be parsed from markup`;
-    super(msg, ...args);
-  }
-}
-
-const validators = [
-  new TitleValidator(),
-  new SummaryValidator(),
-  new TagValidator(),
-  new TimestampValidator(),
-];
-
 export function parse(contents) {
   const file = new VFile(contents);
   matter(file, { strip: true });
@@ -59,15 +78,7 @@ export function parse(contents) {
   // Extract metadata
   const metadata = file.data.matter;
 
-  if (metadata === "undefined") {
-    throw new MissingMetadataError();
-  }
-
-  for (const validator of validators) {
-    if (!validator.isValid(metadata)) {
-      throw new MetadataParseError(validator.fieldName);
-    }
-  }
+  validate(metadata);
 
   const { title, summary, tags, created } = metadata;
 

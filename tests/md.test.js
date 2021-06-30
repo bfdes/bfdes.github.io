@@ -1,7 +1,12 @@
-import { MetadataParseError, MissingMetadataError, parse } from "src/md";
+import {
+  MetadataParseError,
+  MissingMetadataError,
+  MissingMetadataKeysError,
+  parse,
+} from "src/md";
 
-describe("md.parse", () => {
-  it("extracts frontmatter", () => {
+describe("parse", () => {
+  it("extracts metadata from frontmatter", () => {
     const meta = {
       title: "Complex numbers",
       tags: ["Python", "Maths"],
@@ -80,7 +85,7 @@ describe("md.parse", () => {
     expect(post.wordCount).toBe(12);
   });
 
-  it("handles missing frontmatter", () => {
+  it("fails when frontmatter is missing", () => {
     const markup = ["---", "---"].join("\n");
 
     const contents = Buffer.from(markup);
@@ -88,11 +93,11 @@ describe("md.parse", () => {
     expect(() => parse(contents)).toThrow(MissingMetadataError);
   });
 
-  it("handles malformed frontmatter", () => {
+  it("fails when metadata is missing keys", () => {
     const meta = {
       title: "Complex numbers",
-      tags: [1, 2],
-      created: "",
+      tags: ["Python", "Maths"],
+      created: "2018-07-22",
     };
 
     const markup = [
@@ -100,6 +105,28 @@ describe("md.parse", () => {
       `title: ${meta.title}`,
       `tags: [${meta.tags.join(", ")}]`,
       `created: ${meta.created}`,
+      "---",
+    ].join("\n");
+
+    const contents = Buffer.from(markup);
+
+    expect(() => parse(contents)).toThrow(MissingMetadataKeysError);
+  });
+
+  it("fails when metadata cannot be parsed", () => {
+    const meta = {
+      title: "Complex numbers",
+      tags: [1, 2],
+      created: "",
+      summary: "Representing complex numbers in Python",
+    };
+
+    const markup = [
+      "---",
+      `title: ${meta.title}`,
+      `tags: [${meta.tags.join(", ")}]`,
+      `created: ${meta.created}`,
+      `summary: ${meta.summary}`,
       "---",
     ].join("\n");
 

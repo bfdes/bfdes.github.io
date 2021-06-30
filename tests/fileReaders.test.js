@@ -24,7 +24,7 @@ describe("FileReader", () => {
     await expect(fileReader.read("helloWorld.js")).resolves.toBe(fileContents);
   });
 
-  it("fails when file is missing", async () => {
+  it("fails when files are missing", async () => {
     const stubFs = {
       async readFile() {
         throw new Error();
@@ -55,7 +55,7 @@ describe("DirReader", () => {
     await expect(dirReader.read("posts")).resolves.toEqual(filePaths);
   });
 
-  it("fails when directory is missing", async () => {
+  it("fails when directories are missing", async () => {
     const stubFs = {
       async readdir() {
         throw new Error();
@@ -142,7 +142,7 @@ describe("RepoReader", () => {
     await expect(repoReader.read("posts")).rejects.toThrow(FileReadError);
   });
 
-  it("fails when a post cannot be parsed", async () => {
+  it("fails when posts cannot be parsed", async () => {
     const stubFs = {
       async readFile(filePath) {
         if (filePath == path.join("posts", "my-first-post.md")) {

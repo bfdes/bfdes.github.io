@@ -41,7 +41,7 @@ export class Branch extends Tree {
     const content = this.content.join("");
     const openingTag = attributes.size
       ? `<${name} ${attributes}>`
-      : `<${name}>`; // Handle whitespace
+      : `<${name}>`;
     const closingTag = `</${name}>`;
     return `${openingTag}${content}${closingTag}`;
   }
