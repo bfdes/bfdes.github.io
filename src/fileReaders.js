@@ -12,17 +12,16 @@ export class FileReadError extends Error {
 }
 
 class Reader {
+  constructor(fs) {
+    this.fs = fs;
+  }
+
   read() {
     throw new NotImplementedError();
   }
 }
 
 export class FileReader extends Reader {
-  constructor(fs) {
-    super();
-    this.fs = fs;
-  }
-
   read(filePath) {
     try {
       return this.fs.readFileSync(filePath);
@@ -33,11 +32,6 @@ export class FileReader extends Reader {
 }
 
 export class DirReader extends Reader {
-  constructor(fs) {
-    super();
-    this.fs = fs;
-  }
-
   read(dirPath) {
     try {
       return this.fs
@@ -51,7 +45,7 @@ export class DirReader extends Reader {
 
 export class RepoReader extends Reader {
   constructor(fs) {
-    super();
+    super(fs);
     this.fileReader = new FileReader(fs);
     this.dirReader = new DirReader(fs);
   }
