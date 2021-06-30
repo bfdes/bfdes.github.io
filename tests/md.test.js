@@ -85,7 +85,7 @@ describe("parse", () => {
     expect(post.wordCount).toBe(12);
   });
 
-  it("throws when frontmatter is missing", () => {
+  it("fails when frontmatter is missing", () => {
     const markup = ["---", "---"].join("\n");
 
     const contents = Buffer.from(markup);
@@ -93,7 +93,7 @@ describe("parse", () => {
     expect(() => parse(contents)).toThrow(MissingMetadataError);
   });
 
-  it("throws when metadata is missing keys", () => {
+  it("fails when metadata is missing keys", () => {
     const meta = {
       title: "Complex numbers",
       tags: ["Python", "Maths"],
@@ -113,7 +113,7 @@ describe("parse", () => {
     expect(() => parse(contents)).toThrow(MissingMetadataKeysError);
   });
 
-  it("throws when metadata cannot be parsed", () => {
+  it("fails when metadata cannot be parsed", () => {
     const meta = {
       title: "Complex numbers",
       tags: [1, 2],

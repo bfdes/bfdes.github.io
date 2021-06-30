@@ -36,7 +36,7 @@ describe("FileWriter", () => {
     );
   });
 
-  it("handles write errors", () => {
+  it("fails when files cannot be written", () => {
     const fileName = "hello-world.txt";
     const fileContents = "Hello, World!";
     const stubFs = {
@@ -70,7 +70,7 @@ describe("DirWriter", () => {
     expect(stubFs.writeFileSync).toHaveBeenCalledTimes(1);
   });
 
-  it("handles directory write errors", () => {
+  it("fails when directories cannot be written", () => {
     const stubFs = {
       mkdirSync() {
         throw new Error();
@@ -82,7 +82,7 @@ describe("DirWriter", () => {
     expect(() => dirWriter.write(rootPath, dir)).toThrow(FileWriteError);
   });
 
-  it("handles file write errors", () => {
+  it("fails when files cannot be written", () => {
     const stubFs = {
       mkdirSync: jest.fn(),
       writeFileSync() {

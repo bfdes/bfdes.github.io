@@ -16,7 +16,7 @@ afterEach(() => {
 });
 
 describe("<TagList />", () => {
-  it("renders empty span for a post with no tags", () => {
+  it("renders an empty span for a post with no tags", () => {
     // Edge case
     act(() => {
       render(<TagList tags={[]} />, container);
