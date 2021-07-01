@@ -32,7 +32,7 @@ You can find the completed test suite as a GitHub [gist](https://gist.github.com
 + mergeSort.keys: OK, passed 100 tests.
 ```
 
-after running.
+when it runs.
 
 # Properties VS Assertions
 
