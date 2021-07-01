@@ -150,7 +150,6 @@ The runtime of this algorithm is dominated by sorting, which can be done in line
 
 ```java
 public class WeaponOptimizer implements Optimizer<Weapon, Loadout> {
-
   private final List<Double> utilityCoefficients;
 
   public WeaponOptimizer(List<Double> utilityCoefficients) {
@@ -163,7 +162,7 @@ public class WeaponOptimizer implements Optimizer<Weapon, Loadout> {
     for (var slot : weapon.slots()) {
       for (var attachment : slot.availableAttachments()) {
         var price = attachment.price(utilityCoefficients);
-        // Disregard chosenAttachments with negative prices from the outset
+        // Disregard attachments with negative prices from the outset
         if (price > 0) {
           // Cache the computed price for sorting later
           attachments.add(new Triple<>(slot, attachment, price));
@@ -234,7 +233,6 @@ public record Weapon(List<Double> attributes, Set<Slot> slots) {
 
 ```java
 public class Loadout {
-
   public static final int MAX_ATTACHMENTS = 5;
   public final Weapon weapon;
   private final HashMap<Slot, Attachment> attachments = new HashMap<>();
@@ -281,7 +279,6 @@ In Java,
 
 ```java
 public class LoadoutOptimizer implements Optimizer<List<Weapon>, Loadout> {
-
   private final Optimizer<Weapon, Loadout> weaponOptimizer;
 
   public LoadoutOptimizer(Optimizer<Weapon, Loadout> weaponOptimizer) {

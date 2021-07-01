@@ -179,4 +179,4 @@ I want to thank the people who reviewed the first draft of this blog post. [Adil
 [^5]: The course [Algorithms I](https://www.coursera.org/learn/algorithms-part1) does an excellent job in explaining how Rabin-Karp works.
 [^6]: Unless you work at Google :P
 [^7]: We can get away using recursion when working in a language that supports tail-call optimization. Unfortunately, [Python does not](https://stackoverflow.com/a/13592002).
-[^8]: For example, an absurd way of implementing a Monte Carlo algorithm given a Las Vegas variant is to return the correct index on every other invocation and a random one otherwise.
+[^8]: For example, an absurd way of implementing a Monte Carlo variant of Rabin Karp given a Las Vegas variant is to return the correct index on every other invocation and a random one otherwise.
