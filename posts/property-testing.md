@@ -53,7 +53,7 @@ List(
 
 to the simple property definition we saw before, which checks many more cases.[^5]
 
-ScalaCheck can generate exhaustive test cases for functions with a finite domain. For functions with an infinitely sized domain, such as the sorting function we are going to look at, we should write generators that obtain a representative sample.[^6]
+ScalaCheck can generate exhaustive test cases for functions with a finite domain. For functions with an infinitely sized domain, such as the sorting function we are going to look at, we have to write generators that obtain a representative sample.[^6]
 
 Even when the domain is finite, sometimes we limit generators to sample from a subset so that tests do not take too long to run.
 
