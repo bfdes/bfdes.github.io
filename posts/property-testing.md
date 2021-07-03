@@ -55,8 +55,6 @@ to the simple property definition we saw before, which checks many more cases.[^
 
 ScalaCheck can generate exhaustive test cases for functions with a finite domain. For functions with an infinitely sized domain, such as the sorting function we are going to look at, we have to write generators that obtain a representative sample.[^6]
 
-Even when the domain is finite, sometimes we limit generators to sample from a subset so that tests do not take too long to run.
-
 Assertion-based tests are better at documenting edge case behaviour, or ensuring that tests always run for edge case input. For JSON parsing, edge case input could include empty strings, arrays or objects:
 
 ```scala
