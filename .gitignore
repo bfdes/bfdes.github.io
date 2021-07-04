@@ -1,10 +1,10 @@
-// Dependencies
-node_modules
-
 // Built files
 build.js
 coverage
 site
+
+// Dependencies
+node_modules
 
 // Platform specific
 .DS_Store
