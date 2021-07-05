@@ -1,7 +1,7 @@
 # bfdes.in
 
 ![GitHub Actions](https://github.com/bfdes/bfdes.github.io/workflows/Test/badge.svg)
-[![Codecov](https://codecov.io/gh/bfdes/bfdes.in/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.github.io)
+[![Codecov](https://codecov.io/gh/bfdes/bfdes.github.io/branch/master/graph/badge.svg)](https://codecov.io/gh/bfdes/bfdes.github.io)
 
 Source for my personal blog.
 
