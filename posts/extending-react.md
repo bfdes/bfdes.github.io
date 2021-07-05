@@ -358,8 +358,9 @@ class Dir extends FileSystem {
       throw new FileWriteError(dirPath);
     }
     // and then all the children at once
-    const promises = this.content.map((fileOrDir) => fileOrDir.write(dirPath));
-    await Promise.all(promises);
+    await Promise.all(
+      this.content.map((fileOrDir) => fileOrDir.write(dirPath))
+    );
   }
 }
 ```
