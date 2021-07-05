@@ -247,7 +247,7 @@ export const Dir = () => <></>; // no-op
 
 Our JSX transformer `createElement` should intercept any `File` or `Dir` stub references and delegate all other calls to React:
 
-```jsx
+```js
 const Template = {
   createElement(type, props, ...children) {
     if (type === Dir) {
@@ -264,7 +264,7 @@ const Template = {
 
 `createDir` verifies that all children are `FileSystem` instances before creating a `Dir`:
 
-```jsx
+```js
 class RoutingError extends Error {}
 
 function createDir(props, children) {
@@ -282,7 +282,7 @@ function createDir(props, children) {
 
 `createFile` verifies that there is only one child before creating a `File`:
 
-```jsx
+```js
 function createFile(props, children) {
   // Trivial input verification omitted
   const { name } = props;
@@ -304,10 +304,12 @@ function createFile(props, children) {
 
 That is as much as we need to use the library successfully!
 
-However, there are a couple of improvements that we can make:
+### Cleaning up
+
+There are a couple of improvements that we can make:
 
 1. `createElement` should prevent children from being passed as `props.children`.
-2. `FileSystem.write` implementations should use the promise-based Node filesystem API.
+2. `FileSystem.write` implementations could use the promise-based Node filesystem API.
 
 Passing children directly through props is discouraged.[^5] It leads to quirks when children are _also_ passed through composition, as the transpiler discards `props.children` when calling the JSX factory.
 
@@ -329,6 +331,41 @@ Code like
 will throw when executed.
 
 Using callback or promise-based Node APIs to write directories and files asynchronously means we can ask the operating system to try writing all the children of a directory at once. Currently, we wait for one child to be written before we start writing the next one.[^6]
+
+The simplest way to make the change is to use `async`-`await` syntax:
+
+```js
+import fs from "fs/promises";
+
+class File extends FileSystem {
+  async write(rootPath) {
+    const filePath = path.join(rootPath, this.name);
+    try {
+      await fs.writeFile(filePath, this.content);
+    } catch (_) {
+      throw new FileWriteError(filePath);
+    }
+  }
+}
+
+class Dir extends FileSystem {
+  async write(rootPath) {
+    const dirPath = path.join(rootPath, this.name);
+    try {
+      // Write the parent directory first,
+      await fs.mkdir(dirPath, { recursive: true });
+    } catch (_) {
+      throw new FileWriteError(dirPath);
+    }
+    // and then all the children at once
+    await Promise.all(
+      this.content.map((fileOrDir) => fileOrDir.write(dirPath))
+    );
+  }
+}
+```
+
+If you can afford to, it is best to avoid concurrent programming.
 
 [^1]: Before the introduction of [React Hooks](https://reactjs.org/docs/hooks-intro.html) in React 16.8, class and function components served different purposes. Now that function components can also manipulate React state through hooks, class components are somewhat redundant.
 [^2]: In practice, this means that user-defined React components must be named with a capital letter or be assigned to a capitalised variable before use.
