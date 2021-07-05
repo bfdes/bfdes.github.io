@@ -52,10 +52,11 @@ export class RepoReader extends Reader {
 
   async read(dirPath) {
     const children = await this.dirReader.read(dirPath);
-    const promises = children
-      .filter((filePath) => path.extname(filePath) == ".md")
-      .map((filePath) => this.fileReader.read(filePath));
-    const fileContents = await Promise.all(promises);
+    const fileContents = await Promise.all(
+      children
+        .filter((filePath) => path.extname(filePath) == ".md")
+        .map((filePath) => this.fileReader.read(filePath))
+    );
     const posts = fileContents.map(md.parse);
     return new Repo(posts);
   }

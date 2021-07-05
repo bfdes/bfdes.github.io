@@ -35,10 +35,9 @@ export default class FileWriter {
     } catch (_) {
       throw new FileWriteError(dirPath);
     }
-    const promises = dir.content.map((fileOrDir) =>
-      this.write(dirPath, fileOrDir)
+    await Promise.all(
+      dir.content.map((fileOrDir) => this.write(dirPath, fileOrDir))
     );
-    await Promise.all(promises);
   }
 
   async write(rootPath, fileOrDir) {
