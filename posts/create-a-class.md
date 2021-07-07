@@ -13,7 +13,7 @@ Modern Warfare, the latest entry in the Call Of Duty series, takes weapon custom
 
 I wondered whether it would be possible to determine the "best" modifications for a weapon without trying out every permutation of attachments.
 
-# Gunsmith
+## Gunsmith
 
 In the game world, each weapon has a set of base attributes that define how it handles. These include, but are not limited to, the weapon's range, its damage and the recoil it imparts.
 
@@ -25,7 +25,7 @@ For example, a short-barrelled MP5K will be more manoeuvrable than a regular MP5
 
 To proceed, the key insight we need is to recognize that choosing a loadout is the same as solving a microeconomic optimization problem. Effectively, we seek to maximize a player’s [utility](https://en.wikipedia.org/wiki/Utility) subject to cost constraints imposed by game mechanics. Here, utility describes the increased performance a player derives from using their preferred loadout.
 
-# Weapon Utility
+## Weapon Utility
 
 Let's model utility $U$ as a function of the weapon attributes, represented as a vector $\mathbf{x}$.
 
@@ -65,7 +65,7 @@ $$
 \displaystyle\sum_j^{n_i} X_{ij} \leq 1 \ \forall \ i
 $$
 
-# Combinatorial optimization
+## Combinatorial optimization
 
 [Combinatorics](https://en.wikipedia.org/wiki/Combinatorics) can be used to gauge the size of the problem we are trying to solve.
 
@@ -106,7 +106,7 @@ $$
 
 Every utility coefficient $u_i$ needs to be positive to satisfy the non-satiation assumption.
 
-# The Knapsack Problem
+## The Knapsack Problem
 
 Observe that maximizing the original objective $U$ is the same as maximizing a transformed one $U'$:
 

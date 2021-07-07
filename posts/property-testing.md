@@ -34,7 +34,7 @@ You can find the completed test suite as a GitHub [gist](https://gist.github.com
 
 when it runs.
 
-# Properties VS Assertions
+## Properties VS Assertions
 
 Assertions can be regarded as tests for example scenarios represented by a single property. Write property tests when it becomes tiresome or impossible to provide every example scenario.
 
@@ -63,7 +63,7 @@ assert(Json.encode(Json.decode(Json.arr())) == Json.arr())
 assert(Json.encode(Json.decode(Json.obj())) == Json.obj())
 ```
 
-# A Specification for sorting
+## A Specification for sorting
 
 Formally, a sorting function is defined by two properties:
 
@@ -109,7 +109,7 @@ class Histogram[K](keys: Seq[K]) {
 }
 ```
 
-# Mergesort
+## Mergesort
 
 The [gist](https://gist.github.com/bfdes/88f3292aa2d23e619714bee4221799d8) contains an implementation of mergesort transcribed to Scala from [Algorithms I](https://www.coursera.org/learn/algorithms-part1).
 
@@ -120,14 +120,14 @@ Mergesort is a divide-and-conquer algorithm; it consists of two subroutines:
 
 Note that our implementation `mergeSort` carries out a stable sort -- it ensures that any two keys which compare equally maintain their relative positions in the array. Writing a property to verify `mergeSort` is indeed stable is left as an exercise for the reader.[^7]
 
-# Testing with ScalaCheck
+## Testing with ScalaCheck
 
 To use ScalaCheck, we need to be aware of two abstract data types it exports:
 
 - `Gen[T]` instances encode all the information necessary to produce samples of type `T`
 - `Prop` enables us to verify properties by sampling a generator
 
-## Writing generators
+### Writing generators
 
 It is impossible to create generators for the infinite number of input types that generic functions like `mergeSort[T]` accept, so we have to limit ourselves to a handful. For the sake of simplicity, let's constrain the test suite even further and only test positive integer array input.
 
@@ -140,7 +140,7 @@ val intArray: Gen[Array[Int]] =
 
 ScalaCheck will choose the number of samples to generate when running the test, as well as the size of the largest array. It may not behave as we want it to by default.[^6]
 
-## Writing properties
+### Writing properties
 
 It is really straightforward to write property number one, given the array generator we already have:
 
@@ -164,7 +164,7 @@ val propTwo =
   }
 ```
 
-## Putting it all together
+### Putting it all together
 
 We have everything we need to test `mergeSort` works (for integer arrays):
 
