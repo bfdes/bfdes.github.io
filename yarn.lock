@@ -4725,10 +4725,10 @@ v8-to-istanbul@^8.0.0:
     convert-source-map "^1.6.0"
     source-map "^0.7.3"
 
-vfile-matter@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/vfile-matter/-/vfile-matter-3.0.0.tgz#e60903f570fe4455114fa7b9a0ae04c519e5d194"
-  integrity sha512-64atxFQjDgQac0VEr4kuRt1sZIjYL0FLcBWBBorY7TxMkO6sdsfG8PMPrHFKhwCLA2ulU9NsNZsChpDNHyOecA==
+vfile-matter@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/vfile-matter/-/vfile-matter-3.0.1.tgz#85e26088e43aa85c04d42ffa3693635fa2bc5624"
+  integrity sha512-CAAIDwnh6ZdtrqAuxdElUqQRQDQgbbIrYtDYI8gCjXS1qQ+1XdLoK8FIZWxJwn0/I+BkSSZpar3SOgjemQz4fg==
   dependencies:
     "@types/js-yaml" "^4.0.0"
     is-buffer "^2.0.0"
