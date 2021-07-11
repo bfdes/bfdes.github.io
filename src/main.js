@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import { RepoReader } from "./fileReaders";
 import FileWriter from "./fileWriter";
@@ -8,6 +8,11 @@ const repoReader = new RepoReader(fs);
 const fileWriter = new FileWriter(fs);
 
 const markupPath = path.join(__dirname, "posts");
-const repo = repoReader.read(markupPath);
-const fileOrDir = Router(repo);
-fileWriter.write(".", fileOrDir);
+
+async function main() {
+  const repo = await repoReader.read(markupPath);
+  const fileOrDir = Router(repo);
+  await fileWriter.write(".", fileOrDir);
+}
+
+main();
